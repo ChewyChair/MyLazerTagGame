@@ -10,9 +10,12 @@ public class CustomAREffects : DefaultObserverEventHandler
     public GameObject grenadePrefab;
     public GameObject shieldPrefab;
     public GameObject explosionPrefab;
+    public GameObject spearPrefab;
+    public ParticleSystem bloodSprayPs;
     private GameObject instantiatedGrenade;
     private GameObject instantiatedShield;
     private GameObject instantiatedExplosion;
+    private GameObject instantiatedSpear;
 
 
     protected override void OnTrackingFound()
@@ -27,6 +30,16 @@ public class CustomAREffects : DefaultObserverEventHandler
         crosshair.SetActive(false);
         RemoveShield();
         RemoveGrenade();
+    }
+
+    public void ShowBloodSpray() {
+        bloodSprayPs.Play();
+        StartCoroutine(EndSpray());
+    }
+
+    public IEnumerator EndSpray() {
+        yield return new WaitForSeconds(0.1f);
+        bloodSprayPs.Stop();
     }
 
     public void OnGrenadeButtonPressed()
@@ -49,6 +62,16 @@ public class CustomAREffects : DefaultObserverEventHandler
             StartCoroutine(ShieldLookAtCamera(instantiatedShield));
             StartCoroutine(ShieldDuration());
         }
+    }
+
+    public void OnSpearButtonPressed()
+    {
+        RemoveSpear(); 
+        Vector3 direction = this.transform.position - camera.transform.position;
+        Quaternion rotation = Quaternion.LookRotation(direction);
+        instantiatedSpear = Instantiate(spearPrefab, camera.transform.position, rotation * Quaternion.Euler(70, 0, 0));
+        // instantiatedGrenade.transform.localScale = new Vector3(2f, 2f, 2f);
+        StartCoroutine(MoveSpearTowardsTarget(instantiatedSpear));
     }
 
     private IEnumerator MoveGrenadeTowardsTarget(GameObject grenade)
@@ -86,6 +109,39 @@ public class CustomAREffects : DefaultObserverEventHandler
         Destroy(grenade);
     }
     
+    private IEnumerator MoveSpearTowardsTarget(GameObject spear)
+    {
+        Vector3 startPosition = spear.transform.position;
+        Vector3 endPosition = this.transform.position;
+        endPosition.y += 1f; // Adjust this value to set how much below the image we want the grenade to land.
+
+        float journeyDuration = 1f;
+        float startTime = Time.time;
+
+        Quaternion startRotation = spear.transform.rotation;
+        Quaternion endRotation = spear.transform.rotation * Quaternion.Euler(40, 0, 0);
+
+        Vector3 hvel = Vector3.Lerp(startPosition, endPosition, 1f);
+        float vvel = 2.0f;
+
+        while ((Time.time - startTime) < journeyDuration)
+        {
+            float x = (Time.time - startTime) / journeyDuration;
+
+            vvel *= 0.99f;
+            vvel -= 0.08f;
+      
+            spear.transform.position += hvel * Time.deltaTime;
+            spear.transform.position += new Vector3(0f, vvel * Time.deltaTime, 0f);
+            spear.transform.rotation = Quaternion.Lerp(startRotation, endRotation, x);
+            spear.transform.GetChild(0).transform.rotation *= Quaternion.Euler(0, 180f * Time.deltaTime, 0); // SPIN
+
+            yield return null;
+        }
+
+        Destroy(spear);
+    }
+
     private IEnumerator explosionTimeout(GameObject explosion) {
         yield return new WaitForSeconds(1);
         RemoveExplosion();
@@ -93,6 +149,7 @@ public class CustomAREffects : DefaultObserverEventHandler
 
     private IEnumerator ShieldLookAtCamera(GameObject shield) {
         while (shield) {
+            shield.transform.position = this.transform.position;
             shield.transform.LookAt(camera.transform.position);
             yield return null;
         }
@@ -126,5 +183,14 @@ public class CustomAREffects : DefaultObserverEventHandler
             Destroy(instantiatedExplosion);
         }
     }
+
+    private void RemoveSpear()
+    {
+        if (instantiatedSpear)
+        {
+            Destroy(instantiatedSpear);
+        }
+    }
+
 }
 

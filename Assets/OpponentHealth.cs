@@ -9,6 +9,7 @@ public class OpponentHealth : MonoBehaviour
     //public GunController gunController;
     //public GrenadeController grenadeController;
     //public ShieldController shieldController;
+    public CustomAREffects care;
 
     private float health;
     private float lerpTimer;
@@ -90,21 +91,27 @@ public class OpponentHealth : MonoBehaviour
 
     public void BulletShotReceived()
     {
-        TakeDamage(10f);
+        StartCoroutine(TakeDamage(10f, 0f));
     }
 
     public void AttackReceived()
     {
-        TakeDamage(10f);
+        StartCoroutine(TakeDamage(10f, 1f));
+    }
+
+    public void SpearReceived()
+    {
+        StartCoroutine(TakeDamage(10f, 1f));
     }
 
     public void GrenadeReceived()
     {
-        TakeDamage(30f);
+        StartCoroutine(TakeDamage(30f, 2f));
     }
 
-    public void TakeDamage(float damage)
+    public IEnumerator TakeDamage(float damage, float seconds)
     {
+        yield return new WaitForSeconds(seconds);
         if (currentShieldHP > 0)
         {
             currentShieldHP -= damage;
@@ -119,6 +126,7 @@ public class OpponentHealth : MonoBehaviour
         else
         {
             health -= damage;
+            care.ShowBloodSpray();
         }
 
         lerpTimer = 0f;
