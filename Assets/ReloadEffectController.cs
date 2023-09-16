@@ -14,7 +14,7 @@ public class ReloadEffectController : MonoBehaviour
         reloadPanelAnimator = reloadPanel.GetComponent<Animator>();
 
         // Initially, the panel should be hidden
-        reloadPanel.SetActive(false);
+        // reloadPanel.SetActive(false);
 
         // Subscribe the function to the button click
         reloadButton.onClick.AddListener(ShowReloadEffect);
@@ -23,8 +23,10 @@ public class ReloadEffectController : MonoBehaviour
     private void ShowReloadEffect()
     {
         // Check if the bullet count in GunController is 0
+        
         if (gunController.bulletCount == 0)
         {
+            gunController.Reload();
             // Activate the panel and play the animation
             reloadPanel.SetActive(true);
             reloadPanelAnimator.Play("ReloadPopup");

@@ -7,7 +7,7 @@ public class GrenadeController : MonoBehaviour
     public TMP_Text grenadeCountText;
     public Button grenadeButton;
 
-    private int grenadeCount = 2; // Starting grenades
+    private int grenadeCount = 20; // Starting grenades
 
     private void Start()
     {
@@ -16,7 +16,7 @@ public class GrenadeController : MonoBehaviour
         grenadeButton.onClick.AddListener(ThrowGrenade);
     }
 
-    private void ThrowGrenade()
+    public void ThrowGrenade()
     {
         if (grenadeCount > 0)
         {

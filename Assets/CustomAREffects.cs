@@ -4,11 +4,16 @@ using Vuforia;
 
 public class CustomAREffects : DefaultObserverEventHandler
 {
+    public bool isTargetVisible;
+    public GameObject camera;
     public GameObject crosshair;
     public GameObject grenadePrefab;
     public GameObject shieldPrefab;
+    public GameObject explosionPrefab;
     private GameObject instantiatedGrenade;
     private GameObject instantiatedShield;
+    private GameObject instantiatedExplosion;
+
 
     protected override void OnTrackingFound()
     {
@@ -27,7 +32,8 @@ public class CustomAREffects : DefaultObserverEventHandler
     public void OnGrenadeButtonPressed()
     {
         RemoveGrenade(); // In case another grenade was already flying
-        instantiatedGrenade = Instantiate(grenadePrefab, grenadePrefab.transform.position, grenadePrefab.transform.rotation);
+        instantiatedGrenade = Instantiate(grenadePrefab, camera.transform.position, Quaternion.identity);
+        instantiatedGrenade.transform.localScale = new Vector3(2f, 2f, 2f);
         StartCoroutine(MoveGrenadeTowardsTarget(instantiatedGrenade));
     }
 
@@ -36,7 +42,11 @@ public class CustomAREffects : DefaultObserverEventHandler
         crosshair.SetActive(false);
         if (!instantiatedShield)
         {
-            instantiatedShield = Instantiate(shieldPrefab, shieldPrefab.transform.position, shieldPrefab.transform.rotation);
+            instantiatedShield = Instantiate(shieldPrefab, this.transform.position, Quaternion.identity);
+            instantiatedShield.transform.position += new Vector3(0f, 0f, 1f);
+            instantiatedShield.transform.localScale = new Vector3(0.2f, 0.2f, 0.2f);
+
+            StartCoroutine(ShieldLookAtCamera(instantiatedShield));
             StartCoroutine(ShieldDuration());
         }
     }
@@ -45,7 +55,7 @@ public class CustomAREffects : DefaultObserverEventHandler
     {
         Vector3 startPosition = grenade.transform.position;
         Vector3 endPosition = this.transform.position;
-        endPosition.y -= 5f; // Adjust this value to set how much below the image we want the grenade to land.
+        endPosition.y -= 0f; // Adjust this value to set how much below the image we want the grenade to land.
 
         float journeyDuration = 2f;
         float startTime = Time.time;
@@ -53,28 +63,40 @@ public class CustomAREffects : DefaultObserverEventHandler
         Quaternion startRotation = grenade.transform.rotation;
         Quaternion endRotation = Quaternion.Euler(90, 0, 0);
 
-        Vector3 startScale = grenade.transform.localScale;
-        Vector3 endScale = startScale * 0.1f;
+        Vector3 hvel = Vector3.Lerp(startPosition, endPosition, 0.5f);
+        float vvel = 2.0f;
 
         while ((Time.time - startTime) < journeyDuration)
         {
             float x = (Time.time - startTime) / journeyDuration;
-            float y = -4 * x * x + 4 * x; // y = -4x^2 + 4x, our parabolic equation
 
-            Vector3 horizontalComponent = Vector3.Lerp(startPosition, endPosition, x);
-            float verticalOffset = (endPosition.y - startPosition.y) * y;
-            Vector3 verticalComponent = new Vector3(0, verticalOffset, 0);
-
-            grenade.transform.position = horizontalComponent + verticalComponent;
+            vvel *= 0.99f;
+            vvel -= 0.05f;
+      
+            grenade.transform.position += hvel * Time.deltaTime;
+            grenade.transform.position += new Vector3(0f, vvel * Time.deltaTime, 0f);
             grenade.transform.rotation = Quaternion.Lerp(startRotation, endRotation, x);
-            grenade.transform.localScale = Vector3.Lerp(startScale, endScale, x);
 
             yield return null;
         }
 
+        instantiatedExplosion = Instantiate(explosionPrefab, grenade.transform.position, Quaternion.identity);
+        instantiatedExplosion.transform.localScale = new Vector3(5f, 5f, 5f);
+        StartCoroutine(explosionTimeout(instantiatedExplosion));
         Destroy(grenade);
     }
+    
+    private IEnumerator explosionTimeout(GameObject explosion) {
+        yield return new WaitForSeconds(1);
+        RemoveExplosion();
+    }
 
+    private IEnumerator ShieldLookAtCamera(GameObject shield) {
+        while (shield) {
+            shield.transform.LookAt(camera.transform.position);
+            yield return null;
+        }
+    }
 
     private IEnumerator ShieldDuration()
     {
@@ -96,6 +118,12 @@ public class CustomAREffects : DefaultObserverEventHandler
         if (instantiatedShield)
         {
             Destroy(instantiatedShield);
+        }
+    }
+
+    private void RemoveExplosion() {
+        if (instantiatedExplosion) {
+            Destroy(instantiatedExplosion);
         }
     }
 }

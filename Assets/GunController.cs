@@ -15,7 +15,7 @@ public class GunController : MonoBehaviour
         UpdateBulletText();
 
         shootButton.onClick.AddListener(Shoot);
-        reloadButton.onClick.AddListener(Reload);
+        // reloadButton.onClick.AddListener(Reload);
     }
 
     private void Shoot()

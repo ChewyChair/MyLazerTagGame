@@ -6,6 +6,8 @@ public class HitDetection : MonoBehaviour
 {
     public MqttPublisher mqttPublisher;
     public MqttReceiver mqttReceiver;
+    public CustomAREffects care;
+    public GrenadeController grenadeControl;
 
     private class GameState
     {
@@ -38,7 +40,19 @@ public class HitDetection : MonoBehaviour
         res.player_id = x.player_id;
         res.action = x.action;
         // detect hit
-        res.isHit = true;
+        if (care.isTargetVisible) {
+            res.isHit = true;
+        } else {
+            res.isHit = false;
+        }
+        switch (res.action) {
+            case "grenade":
+                grenadeControl.ThrowGrenade();
+                care.OnGrenadeButtonPressed();
+                break;
+            default:
+                break;
+        }
 
         string publishMsg = JsonUtility.ToJson(res);
         mqttPublisher.Publish(publishMsg);

@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.4401189, g: 0.48853183, b: 0.5690037, a: 1}
+  m_IndirectSpecularColor: {r: 0.4426174, g: 0.49172682, b: 0.57154197, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -1309,6 +1309,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mqttPublisher: {fileID: 352941824}
   mqttReceiver: {fileID: 352941825}
+  care: {fileID: 1958554951}
+  grenadeControl: {fileID: 368607576}
 --- !u!114 &352941824
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9313,7 +9315,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1361538452
 RectTransform:
   m_ObjectHideFlags: 0
@@ -11177,9 +11179,12 @@ MonoBehaviour:
   OnTargetLost:
     m_PersistentCalls:
       m_Calls: []
+  isTargetVisible: 0
+  camera: {fileID: 347118532}
   crosshair: {fileID: 174376, guid: 96199a19f316441c99cd9befc240937c, type: 3}
   grenadePrefab: {fileID: 100010, guid: e889f3b0fa9bf2e4b87b0bd49cd501f8, type: 3}
   shieldPrefab: {fileID: 1000010501181352, guid: 337b9a8595c80834c9975492b52613be, type: 3}
+  explosionPrefab: {fileID: 1593023632951020, guid: b038f10b3a674b64daf52be8b192f8a5, type: 3}
 --- !u!114 &1958554952
 MonoBehaviour:
   m_ObjectHideFlags: 0
