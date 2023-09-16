@@ -1,3 +1,5 @@
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -85,24 +87,24 @@ public class PlayerState : MonoBehaviour
         }
     }
 
-
-    public void BulletShotReceived()
-    {
-        TakeDamage(10f);
-    }
-
     public void AttackReceived()
     {
-        TakeDamage(10f);
+        StartCoroutine(TakeDamage(10f, 1f));
+    }
+
+    public void SpearReceived()
+    {
+        StartCoroutine(TakeDamage(10f, 1f));
     }
 
     public void GrenadeReceived()
     {
-        TakeDamage(30f);
+        StartCoroutine(TakeDamage(30f, 2f));
     }
 
-    public void TakeDamage(float damage)
+    public IEnumerator TakeDamage(float damage, float seconds)
     {
+        yield return new WaitForSeconds(seconds);
         if (currentShieldHP > 0)
         {
             currentShieldHP -= damage;
