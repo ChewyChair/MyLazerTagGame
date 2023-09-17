@@ -1140,7 +1140,7 @@ MonoBehaviour:
         m_CallState: 2
       - m_Target: {fileID: 1958554951}
         m_TargetAssemblyTypeName: CustomAREffects, Assembly-CSharp
-        m_MethodName: OnHammerButtonPressed
+        m_MethodName: OnPlayerHammerButtonPressed
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -6942,7 +6942,7 @@ MonoBehaviour:
         m_CallState: 2
       - m_Target: {fileID: 1958554951}
         m_TargetAssemblyTypeName: CustomAREffects, Assembly-CSharp
-        m_MethodName: OnSpearButtonPressed
+        m_MethodName: OnPlayerSpearButtonPressed
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -8205,7 +8205,7 @@ MonoBehaviour:
         m_CallState: 2
       - m_Target: {fileID: 1958554951}
         m_TargetAssemblyTypeName: CustomAREffects, Assembly-CSharp
-        m_MethodName: OnGrenadeButtonPressed
+        m_MethodName: OnPlayerGrenadeButtonPressed
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
