@@ -45,16 +45,31 @@ public class HitDetection : MonoBehaviour
         } else {
             res.isHit = false;
         }
+
+        string publishMsg = JsonUtility.ToJson(res);
+
         switch (res.action) {
             case "grenade":
                 grenadeControl.ThrowGrenade();
                 care.OnGrenadeButtonPressed();
+                StartCoroutine(PublishMessage(publishMsg, 2f));
                 break;
+            
+            case "spear":
+                grenadeControl.ThrowGrenade();
+                care.OnGrenadeButtonPressed();
+                StartCoroutine(PublishMessage(publishMsg, 1f));
+                break;
+
             default:
+                StartCoroutine(PublishMessage(publishMsg, 1f));
                 break;
         }
 
-        string publishMsg = JsonUtility.ToJson(res);
+    }
+
+    private IEnumerator PublishMessage(string publishMsg, float seconds) {
+        yield return new WaitForSeconds(seconds);
         mqttPublisher.Publish(publishMsg);
     }
 
