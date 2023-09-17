@@ -8,7 +8,8 @@ public class CustomAREffects : DefaultObserverEventHandler
     public GameObject camera;
     public GameObject crosshair;
     public GameObject grenadePrefab;
-    public GameObject shieldPrefab;
+    public GameObject opponentShieldPrefab; // adjusted back on z axis
+    public GameObject playerShieldPrefab; //adjusted
     public GameObject explosionPrefab;
     public GameObject spearPrefab;
     public GameObject hammerPrefab;
@@ -23,6 +24,7 @@ public class CustomAREffects : DefaultObserverEventHandler
     private GameObject instantiatedHammer;
 
     private GameObject instantiatedOpponentGrenade;
+    private GameObject instantiatedOpponentShield;      
     private GameObject instantiatedOpponentExplosion;
     private GameObject instantiatedOpponentSpear;
     private GameObject instantiatedOpponentHammer;
@@ -79,18 +81,30 @@ public class CustomAREffects : DefaultObserverEventHandler
         StartCoroutine(MoveGrenadeTowardsCamera(instantiatedOpponentGrenade));
     }
 
-    public void OnShieldButtonPressed()
+    public void OnOpponentShieldButtonPressed()
     {
         crosshair.SetActive(false);
-        if (!instantiatedShield)
+        if (!instantiatedOpponentShield)
         {
-            instantiatedShield = Instantiate(shieldPrefab, this.transform.position, Quaternion.identity);
-            instantiatedShield.transform.localScale = new Vector3(0.2f, 0.2f, 0.2f);
+            instantiatedOpponentShield = Instantiate(opponentShieldPrefab, this.transform.position, Quaternion.identity);
+            instantiatedOpponentShield.transform.localScale = new Vector3(0.2f, 0.2f, 0.2f);
 
-            StartCoroutine(ShieldLookAtCamera(instantiatedShield));
+            StartCoroutine(ShieldLookAtCamera(instantiatedOpponentShield));
             StartCoroutine(ShieldDuration());
         }
     }
+
+    public void OnPlayerShieldButtonPressed()
+    {
+        if (!instantiatedShield)
+        {
+            instantiatedShield = Instantiate(playerShieldPrefab, camera.transform.position, camera.transform.rotation);
+            
+            StartCoroutine(ShieldFollowCamera(instantiatedShield));
+            StartCoroutine(ShieldDuration());
+        }
+    }
+
 
     public void OnSpearButtonPressed()
     {
@@ -343,6 +357,14 @@ public class CustomAREffects : DefaultObserverEventHandler
         }
     }
 
+    private IEnumerator ShieldFollowCamera(GameObject shield) {
+        while (shield) {
+            shield.transform.position = camera.transform.position;
+            shield.transform.rotation = camera.transform.rotation;
+            yield return null;
+        }
+    }
+
     private IEnumerator ShieldDuration()
     {
         yield return new WaitForSeconds(2);
@@ -368,9 +390,9 @@ public class CustomAREffects : DefaultObserverEventHandler
 
     private void RemoveShield()
     {
-        if (instantiatedShield)
+        if (instantiatedOpponentShield)
         {
-            Destroy(instantiatedShield);
+            Destroy(instantiatedOpponentShield);
         }
     }
 

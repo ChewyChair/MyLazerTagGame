@@ -2624,7 +2624,7 @@ MonoBehaviour:
         m_CallState: 2
       - m_Target: {fileID: 1958554951}
         m_TargetAssemblyTypeName: CustomAREffects, Assembly-CSharp
-        m_MethodName: OnShieldButtonPressed
+        m_MethodName: OnOpponentShieldButtonPressed
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -6433,6 +6433,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 1958554951}
+        m_TargetAssemblyTypeName: CustomAREffects, Assembly-CSharp
+        m_MethodName: OnPlayerShieldButtonPressed
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1583446038
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8067,7 +8079,8 @@ MonoBehaviour:
   camera: {fileID: 347118532}
   crosshair: {fileID: 174376, guid: 96199a19f316441c99cd9befc240937c, type: 3}
   grenadePrefab: {fileID: 100010, guid: e889f3b0fa9bf2e4b87b0bd49cd501f8, type: 3}
-  shieldPrefab: {fileID: 9070155927365937458, guid: acb2149f7b7b3c3498386e01ff9b1070, type: 3}
+  opponentShieldPrefab: {fileID: 9070155927365937458, guid: acb2149f7b7b3c3498386e01ff9b1070, type: 3}
+  playerShieldPrefab: {fileID: 9070155927365937458, guid: 1f32755e682e10f43bff4e763166f0ab, type: 3}
   explosionPrefab: {fileID: 1593023632951020, guid: b038f10b3a674b64daf52be8b192f8a5, type: 3}
   spearPrefab: {fileID: 8757603770827565685, guid: 92d5c10fc73c0b84b949d7d5a434aaf6, type: 3}
   hammerPrefab: {fileID: 648062374074719334, guid: f8f0d3b0b6fe83145ae0babe26e81dff, type: 3}
