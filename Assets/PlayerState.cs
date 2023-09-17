@@ -10,6 +10,8 @@ public class PlayerState : MonoBehaviour
     public GrenadeController grenadeController;
     public ShieldController shieldController;
     public CustomAREffects care;
+    // public ScreenDamage screenDamageEffect;
+    public GameObject ScreenDamagePanel;
 
     private float health;
     private float lerpTimer;
@@ -88,6 +90,11 @@ public class PlayerState : MonoBehaviour
         }
     }
 
+    public void BulletShotReceived()
+    {
+        StartCoroutine(TakeDamage(10f, 0f));
+    }
+
     public void AttackReceived()
     {
         StartCoroutine(TakeDamage(10f, 1f));
@@ -106,6 +113,16 @@ public class PlayerState : MonoBehaviour
     public void HammerReceived()
     {
         StartCoroutine(TakeDamage(10f, 1f));
+    }
+    
+    public void PunchReceived() 
+    {
+        StartCoroutine(TakeDamage(10f, 0f));
+    }
+
+    public void PortalReceived()
+    {
+        StartCoroutine(TakeDamage(10f, 0f));
     }
 
     public IEnumerator TakeDamage(float damage, float seconds)
@@ -130,11 +147,37 @@ public class PlayerState : MonoBehaviour
 
         lerpTimer = 0f;
 
+        StartCoroutine(ShowDamagePanelTemporarily());
+
         if (health <= 0)
         {
             Respawn();
         }
     }
+
+    /*private void UpdateBloodEffectOpacity(float damage)
+    {
+        float alphaValue = 0f;
+
+        if (damage >= 30)
+            alphaValue = 255 / 255f; // Since Color.a accepts values between 0 and 1
+        else if (damage >= 10)
+            alphaValue = 150 / 255f;
+
+        Image bloodEffectImage = ScreenDamagePanel.GetComponent<Image>();
+        Color tempColor = bloodEffectImage.color;
+        tempColor.a = alphaValue;
+        bloodEffectImage.color = tempColor;
+    }*/
+
+
+    private IEnumerator ShowDamagePanelTemporarily()
+    {
+        ScreenDamagePanel.SetActive(true);
+        yield return new WaitForSeconds(1.5f);
+        ScreenDamagePanel.SetActive(false);
+    }
+
 
     public void RestoreHealth(float healAmount)
     {

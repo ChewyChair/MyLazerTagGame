@@ -77,6 +77,18 @@ public class HitDetection : MonoBehaviour
                     StartCoroutine(PublishMessage(publishMsg, 1f));
                     break;
 
+                case "punch":
+                    opponentHealth.PunchReceived();
+                    care.OnPlayerPunchButtonClicked();
+                    mqttPublisher.Publish(publishMsg);
+                    break;
+
+                case "portal":
+                    opponentHealth.PortalReceived();
+                    care.OnPlayerPortalButtonClicked();
+                    mqttPublisher.Publish(publishMsg);
+                    break;
+
                 default:
                     StartCoroutine(PublishMessage(publishMsg, 1f));
                     break;
@@ -105,6 +117,18 @@ public class HitDetection : MonoBehaviour
                     playerState.HammerReceived();
                     care.OnOpponentHammerButtonPressed();
                     StartCoroutine(PublishMessage(publishMsg, 1f));
+                    break;
+
+                case "punch":
+                    playerState.PunchReceived();
+                    care.OnOpponentPunchButtonClicked();
+                    mqttPublisher.Publish(publishMsg);
+                    break;
+
+                case "portal":
+                    playerState.PortalReceived();
+                    care.OnOpponentPortalButtonClicked();
+                    mqttPublisher.Publish(publishMsg);
                     break;
 
                 default:

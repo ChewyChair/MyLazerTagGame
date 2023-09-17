@@ -114,6 +114,16 @@ public class OpponentHealth : MonoBehaviour
         StartCoroutine(TakeDamage(30f, 2f));
     }
 
+    public void PunchReceived() 
+    {
+        StartCoroutine(TakeDamage(10f, 0f));
+    }
+
+    public void PortalReceived()
+    {
+        StartCoroutine(TakeDamage(10f, 0f));
+    }
+
     public IEnumerator TakeDamage(float damage, float seconds)
     {
         yield return new WaitForSeconds(seconds);
