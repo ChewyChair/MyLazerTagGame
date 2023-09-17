@@ -4,6 +4,8 @@
 /[Bb]uild/
 /[Bb]uilds/
 /[Pp]ackages/
+/[Ll]ogs/
+/[Qq]car/
 /Assets/AssetStoreTools*
 /LameHeli_Data/
 
