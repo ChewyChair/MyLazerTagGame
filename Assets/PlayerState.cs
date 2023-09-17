@@ -102,6 +102,11 @@ public class PlayerState : MonoBehaviour
         StartCoroutine(TakeDamage(30f, 2f));
     }
 
+    public void HammerReceived()
+    {
+        StartCoroutine(TakeDamage(10f, 1f));
+    }
+
     public IEnumerator TakeDamage(float damage, float seconds)
     {
         yield return new WaitForSeconds(seconds);

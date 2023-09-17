@@ -104,6 +104,11 @@ public class OpponentHealth : MonoBehaviour
         StartCoroutine(TakeDamage(10f, 1f));
     }
 
+    public void HammerReceived()
+    {
+        StartCoroutine(TakeDamage(10f, 1f));
+    }
+
     public void GrenadeReceived()
     {
         StartCoroutine(TakeDamage(30f, 2f));
@@ -121,6 +126,9 @@ public class OpponentHealth : MonoBehaviour
                 float overflowDamage = -currentShieldHP;
                 health -= overflowDamage;
                 currentShieldHP = 0;
+                care.ShowBloodSpray();
+            } else {
+                care.ShowSparks();
             }
         }
         else
