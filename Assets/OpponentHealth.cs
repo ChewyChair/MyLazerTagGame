@@ -121,11 +121,12 @@ public class OpponentHealth : MonoBehaviour
         {
             currentShieldHP -= damage;
 
-            if (currentShieldHP < 0)
+            if (currentShieldHP <= 0)
             {
                 float overflowDamage = -currentShieldHP;
                 health -= overflowDamage;
                 currentShieldHP = 0;
+                care.RemoveOpponentShield();
                 care.ShowBloodSpray();
             } else {
                 care.ShowSparks();

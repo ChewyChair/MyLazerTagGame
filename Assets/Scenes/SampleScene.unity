@@ -1885,6 +1885,8 @@ MonoBehaviour:
   mqttReceiver: {fileID: 352941825}
   care: {fileID: 1958554951}
   grenadeControl: {fileID: 368607576}
+  playerState: {fileID: 778244633}
+  opponentHealth: {fileID: 354626520}
 --- !u!114 &352941824
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3555,6 +3557,7 @@ MonoBehaviour:
   gunController: {fileID: 181755493}
   grenadeController: {fileID: 368607576}
   shieldController: {fileID: 1437024496}
+  care: {fileID: 1958554951}
   maxHealth: 100
   chipSpeed: 2
   frontHealthBar: {fileID: 1315507730}

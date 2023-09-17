@@ -8,6 +8,8 @@ public class HitDetection : MonoBehaviour
     public MqttReceiver mqttReceiver;
     public CustomAREffects care;
     public GrenadeController grenadeControl;
+    public PlayerState playerState;
+    public OpponentHealth opponentHealth;
 
     private class GameState
     {
@@ -31,7 +33,6 @@ public class HitDetection : MonoBehaviour
 
     private void OnMessageArrivedHandler(string newMsg)
     {
-        Debug.Log("Checking for hit:" + newMsg + "HIT");
         GameState x = JsonUtility.FromJson<GameState>(newMsg);
 
         // do stuff with gamestate
@@ -48,29 +49,77 @@ public class HitDetection : MonoBehaviour
 
         string publishMsg = JsonUtility.ToJson(res);
 
-        switch (res.action) {
-            case "grenade":
-                grenadeControl.ThrowGrenade();
-                care.OnGrenadeButtonPressed();
-                StartCoroutine(PublishMessage(publishMsg, 2f));
-                break;
-            
-            case "spear":
-                grenadeControl.ThrowGrenade();
-                care.OnGrenadeButtonPressed();
-                StartCoroutine(PublishMessage(publishMsg, 1f));
-                break;
+        // for now we assume that the player is player 1.
+        if (res.player_id == "1") {
+            switch (res.action) {
+                case "grenade":
+                    grenadeControl.ThrowGrenade();
+                    opponentHealth.GrenadeReceived();
+                    care.OnPlayerGrenadeButtonPressed();
+                    StartCoroutine(PublishMessage(publishMsg, 2f));
+                    break;
+                
+                case "spear":
+                    opponentHealth.SpearReceived();
+                    care.OnPlayerSpearButtonPressed();
+                    StartCoroutine(PublishMessage(publishMsg, 1f));
+                    break;
 
-            default:
-                StartCoroutine(PublishMessage(publishMsg, 1f));
-                break;
+                case "shield":
+                    playerState.ActivateShield();
+                    care.OnPlayerShieldButtonPressed();
+                    mqttPublisher.Publish(publishMsg);
+                    break;
+
+                case "hammer":
+                    opponentHealth.HammerReceived();
+                    care.OnPlayerHammerButtonPressed();
+                    StartCoroutine(PublishMessage(publishMsg, 1f));
+                    break;
+
+                default:
+                    StartCoroutine(PublishMessage(publishMsg, 1f));
+                    break;
+            }
+        } else {
+            switch (res.action) {
+                case "grenade":
+                    playerState.GrenadeReceived();
+                    care.OnOpponentGrenadeButtonPressed();
+                    StartCoroutine(PublishMessage(publishMsg, 2f));
+                    break;
+                
+                case "spear":
+                    playerState.SpearReceived();
+                    care.OnOpponentSpearButtonPressed();
+                    StartCoroutine(PublishMessage(publishMsg, 1f));
+                    break;
+
+                case "shield":
+                    opponentHealth.ActivateShield();
+                    care.OnOpponentShieldButtonPressed();
+                    mqttPublisher.Publish(publishMsg);;
+                    break;
+
+                case "hammer":
+                    playerState.HammerReceived();
+                    care.OnOpponentHammerButtonPressed();
+                    StartCoroutine(PublishMessage(publishMsg, 1f));
+                    break;
+
+                default:
+                    StartCoroutine(PublishMessage(publishMsg, 1f));
+                    break;
+            }
         }
+ 
 
     }
 
     private IEnumerator PublishMessage(string publishMsg, float seconds) {
         yield return new WaitForSeconds(seconds);
         mqttPublisher.Publish(publishMsg);
+        // Debug.Log("Sent result:" + publishMsg);     
     }
 
 }

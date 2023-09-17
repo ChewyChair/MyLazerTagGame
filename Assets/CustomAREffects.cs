@@ -34,14 +34,16 @@ public class CustomAREffects : DefaultObserverEventHandler
     protected override void OnTrackingFound()
     {
         base.OnTrackingFound();
+        isTargetVisible = true;
         crosshair.SetActive(true);
     }
 
     protected override void OnTrackingLost()
     {
         base.OnTrackingLost();
+        isTargetVisible = false;
         crosshair.SetActive(false);
-        RemoveShield();
+        RemoveOpponentShield();
         RemoveGrenade();
     }
 
@@ -65,7 +67,7 @@ public class CustomAREffects : DefaultObserverEventHandler
         sparkPs.Stop();
     }
 
-    public void OnGrenadeButtonPressed()
+    public void OnPlayerGrenadeButtonPressed()
     {
         RemoveGrenade(); // In case another grenade was already flying
         instantiatedGrenade = Instantiate(grenadePrefab, camera.transform.position, Quaternion.identity);
@@ -90,7 +92,7 @@ public class CustomAREffects : DefaultObserverEventHandler
             instantiatedOpponentShield.transform.localScale = new Vector3(0.2f, 0.2f, 0.2f);
 
             StartCoroutine(ShieldLookAtCamera(instantiatedOpponentShield));
-            StartCoroutine(ShieldDuration());
+            // StartCoroutine(ShieldDuration());
         }
     }
 
@@ -101,12 +103,11 @@ public class CustomAREffects : DefaultObserverEventHandler
             instantiatedShield = Instantiate(playerShieldPrefab, camera.transform.position, camera.transform.rotation);
             
             StartCoroutine(ShieldFollowCamera(instantiatedShield));
-            StartCoroutine(ShieldDuration());
+            // StartCoroutine(ShieldDuration());
         }
     }
 
-
-    public void OnSpearButtonPressed()
+    public void OnPlayerSpearButtonPressed()
     {
         RemoveSpear(); 
         Vector3 direction = this.transform.position - camera.transform.position;
@@ -126,7 +127,7 @@ public class CustomAREffects : DefaultObserverEventHandler
         StartCoroutine(MoveSpearTowardsCamera(instantiatedOpponentSpear));
     }
 
-    public void OnHammerButtonPressed()
+    public void OnPlayerHammerButtonPressed()
     {
         RemoveHammer(); 
         Vector3 direction = this.transform.position - camera.transform.position;
@@ -368,8 +369,7 @@ public class CustomAREffects : DefaultObserverEventHandler
     private IEnumerator ShieldDuration()
     {
         yield return new WaitForSeconds(2);
-        RemoveShield();
-        crosshair.SetActive(true);
+        RemoveOpponentShield();
     }
 
     private void RemoveGrenade()
@@ -388,11 +388,18 @@ public class CustomAREffects : DefaultObserverEventHandler
         }
     }
 
-    private void RemoveShield()
+    public void RemovePlayerShield() {
+        if (instantiatedShield) {
+            Destroy(instantiatedShield);
+        }
+    }
+
+    public void RemoveOpponentShield()
     {
         if (instantiatedOpponentShield)
         {
             Destroy(instantiatedOpponentShield);
+            crosshair.SetActive(true);
         }
     }
 

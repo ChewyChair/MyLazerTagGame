@@ -9,6 +9,7 @@ public class PlayerState : MonoBehaviour
     public GunController gunController;
     public GrenadeController grenadeController;
     public ShieldController shieldController;
+    public CustomAREffects care;
 
     private float health;
     private float lerpTimer;
@@ -114,11 +115,12 @@ public class PlayerState : MonoBehaviour
         {
             currentShieldHP -= damage;
 
-            if (currentShieldHP < 0)
+            if (currentShieldHP <= 0)
             {
                 float overflowDamage = -currentShieldHP;
                 health -= overflowDamage;
                 currentShieldHP = 0;
+                care.RemovePlayerShield();
             }
         }
         else
