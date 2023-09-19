@@ -11,12 +11,13 @@ public class HitDetection : MonoBehaviour
     public PlayerState playerState;
     public OpponentHealth opponentHealth;
 
-    private class GameState
+    private class MqttMessage
     {
+        public string type;
         public string player_id;
         public string action;
-        // string for now
-        public string gamestate;
+        public bool isHit;
+        public string game_state;
     }
 
     private class Result
@@ -33,10 +34,16 @@ public class HitDetection : MonoBehaviour
 
     private void OnMessageArrivedHandler(string newMsg)
     {
-        GameState x = JsonUtility.FromJson<GameState>(newMsg);
+        MqttMessage x = JsonUtility.FromJson<MqttMessage>(newMsg);
 
-        // do stuff with gamestate
+        if (x.type == "QUERY") {
+            CheckForHit(x);
+        } else { // x.type == "UPDATE"
+            UpdateVisualiser(x);
+        }
+    }
 
+    private void CheckForHit(MqttMessage x) {
         Result res = new Result();
         res.player_id = x.player_id;
         res.action = x.action;
@@ -49,95 +56,85 @@ public class HitDetection : MonoBehaviour
 
         string publishMsg = JsonUtility.ToJson(res);
 
+        // reply with hitdetection
+        mqttPublisher.Publish(publishMsg);
+    }
+
+    private void UpdateVisualiser(MqttMessage x) {
         // for now we assume that the player is player 1.
-        if (res.player_id == "1") {
-            switch (res.action) {
+        if (x.player_id == "1") {
+            switch (x.action) {
                 case "grenade":
                     grenadeControl.ThrowGrenade();
                     opponentHealth.GrenadeReceived();
                     care.OnPlayerGrenadeButtonPressed();
-                    StartCoroutine(PublishMessage(publishMsg, 2f));
                     break;
                 
                 case "spear":
                     opponentHealth.SpearReceived();
                     care.OnPlayerSpearButtonPressed();
-                    StartCoroutine(PublishMessage(publishMsg, 1f));
                     break;
 
                 case "shield":
                     playerState.ActivateShield();
                     care.OnPlayerShieldButtonPressed();
-                    mqttPublisher.Publish(publishMsg);
                     break;
 
                 case "hammer":
                     opponentHealth.HammerReceived();
                     care.OnPlayerHammerButtonPressed();
-                    StartCoroutine(PublishMessage(publishMsg, 1f));
                     break;
 
                 case "punch":
                     opponentHealth.PunchReceived();
                     care.OnPlayerPunchButtonClicked();
-                    mqttPublisher.Publish(publishMsg);
                     break;
 
                 case "portal":
                     opponentHealth.PortalReceived();
                     care.OnPlayerPortalButtonClicked();
-                    mqttPublisher.Publish(publishMsg);
                     break;
 
                 default:
-                    StartCoroutine(PublishMessage(publishMsg, 1f));
                     break;
             }
         } else {
-            switch (res.action) {
+            switch (x.action) {
                 case "grenade":
                     playerState.GrenadeReceived();
                     care.OnOpponentGrenadeButtonPressed();
-                    StartCoroutine(PublishMessage(publishMsg, 2f));
                     break;
                 
                 case "spear":
                     playerState.SpearReceived();
                     care.OnOpponentSpearButtonPressed();
-                    StartCoroutine(PublishMessage(publishMsg, 1f));
                     break;
 
                 case "shield":
                     opponentHealth.ActivateShield();
                     care.OnOpponentShieldButtonPressed();
-                    mqttPublisher.Publish(publishMsg);;
                     break;
 
                 case "hammer":
                     playerState.HammerReceived();
                     care.OnOpponentHammerButtonPressed();
-                    StartCoroutine(PublishMessage(publishMsg, 1f));
                     break;
 
                 case "punch":
                     playerState.PunchReceived();
                     care.OnOpponentPunchButtonClicked();
-                    mqttPublisher.Publish(publishMsg);
                     break;
 
                 case "portal":
                     playerState.PortalReceived();
                     care.OnOpponentPortalButtonClicked();
-                    mqttPublisher.Publish(publishMsg);
                     break;
 
                 default:
-                    StartCoroutine(PublishMessage(publishMsg, 1f));
                     break;
             }
         }
- 
-
+        // UPDATE UI
     }
 
     private IEnumerator PublishMessage(string publishMsg, float seconds) {
