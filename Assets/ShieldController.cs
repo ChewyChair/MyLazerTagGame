@@ -43,5 +43,11 @@ public class ShieldController : MonoBehaviour
         shieldButton.interactable = true;
     }
 
+    public void SetShields(int x)
+    {
+        shieldCount = x;
+        UpdateShieldText();
+    }
+
 }
 

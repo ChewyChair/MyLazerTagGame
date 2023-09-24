@@ -190,4 +190,22 @@ public class OpponentHealth : MonoBehaviour
         grenadeController.ResetGrenades();
         shieldController.ResetShields();
     }*/
+
+    public void SetHealth(int x)
+    {
+        if (health > x) {
+            StartCoroutine(TakeDamage(health - x, 0f));
+        } else {
+            health = x;
+        }
+    }
+
+    public void SetShieldHp(int x)
+    {
+        if (currentShieldHP > x) {
+            StartCoroutine(TakeDamage(currentShieldHP - x, 0f));
+        } else {
+            currentShieldHP = x;
+        }
+    }
 }

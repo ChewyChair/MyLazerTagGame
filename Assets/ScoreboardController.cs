@@ -27,5 +27,12 @@ public class ScoreboardController : MonoBehaviour
         playerScoreText.text = playerScore.ToString();
         opponentScoreText.text = opponentScore.ToString();
     }
+
+    public void SetScore(int x, int y)
+    {
+        playerScore = x;
+        opponentScore = y;
+        UpdateScoreText();
+    }
 }
 

@@ -43,5 +43,10 @@ public class GrenadeController : MonoBehaviour
         grenadeButton.interactable = true;
     }
 
+    public void SetGrenades(int x) {
+        grenadeCount = x;
+        UpdateGrenadeText();
+    }
+
 }
 

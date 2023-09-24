@@ -16,8 +16,11 @@ public class CustomAREffects : DefaultObserverEventHandler
     public GameObject portalPrefab;
     public GameObject punchPrefab; 
 
+    public GameObject playerGun;
+
     public ParticleSystem bloodSprayPs;
     public ParticleSystem sparkPs;
+    public ParticleSystem gunPs;
 
     private GameObject instantiatedGrenade;
     private GameObject instantiatedShield;
@@ -41,6 +44,7 @@ public class CustomAREffects : DefaultObserverEventHandler
         base.OnTrackingFound();
         isTargetVisible = true;
         crosshair.SetActive(true);
+        StartCoroutine(GunAimAtTarget());
     }
 
     protected override void OnTrackingLost()
@@ -74,6 +78,16 @@ public class CustomAREffects : DefaultObserverEventHandler
     private IEnumerator EndSparks() {
         yield return new WaitForSeconds(0.4f);
         sparkPs.Stop();
+    }
+
+    public void ShowMuzzleFlash() {
+        gunPs.Play();
+        StartCoroutine(EndMuzzleFlash());
+    }
+
+    private IEnumerator EndMuzzleFlash() {
+        yield return new WaitForSeconds(0.15f);
+        gunPs.Stop();
     }
 
     public void OnPlayerGrenadeButtonPressed()
@@ -228,6 +242,10 @@ public class CustomAREffects : DefaultObserverEventHandler
 
         while ((Time.time - startTime) < journeyDuration)
         {
+            if (!grenade) {
+                break;
+            }
+
             float x = (Time.time - startTime) / journeyDuration;
 
             // drag and gravity
@@ -241,9 +259,12 @@ public class CustomAREffects : DefaultObserverEventHandler
             yield return null;
         }
 
-        instantiatedExplosion = Instantiate(explosionPrefab, grenade.transform.position, Quaternion.identity);
-        instantiatedExplosion.transform.localScale = new Vector3(5f, 5f, 5f);
-        StartCoroutine(explosionTimeout(instantiatedExplosion));
+        if (grenade) {
+            instantiatedExplosion = Instantiate(explosionPrefab, grenade.transform.position, Quaternion.identity);
+            instantiatedExplosion.transform.localScale = new Vector3(5f, 5f, 5f);
+            StartCoroutine(explosionTimeout(instantiatedExplosion));
+        }
+
         Destroy(grenade);
     }
 
@@ -265,6 +286,10 @@ public class CustomAREffects : DefaultObserverEventHandler
 
         while ((Time.time - startTime) < journeyDuration)
         {
+            if (!grenade) {
+                break;
+            }
+
             float x = (Time.time - startTime) / journeyDuration;
 
             vvel *= 0.99f;
@@ -277,9 +302,12 @@ public class CustomAREffects : DefaultObserverEventHandler
             yield return null;
         }
 
-        instantiatedOpponentExplosion = Instantiate(explosionPrefab, grenade.transform.position, Quaternion.identity);
-        instantiatedOpponentExplosion.transform.localScale = new Vector3(5f, 5f, 5f);
-        StartCoroutine(explosionTimeout(instantiatedOpponentExplosion));
+        if (grenade) {
+            instantiatedOpponentExplosion = Instantiate(explosionPrefab, grenade.transform.position, Quaternion.identity);
+            instantiatedOpponentExplosion.transform.localScale = new Vector3(5f, 5f, 5f);
+            StartCoroutine(explosionTimeout(instantiatedOpponentExplosion));
+        }
+
         Destroy(grenade);
     }
     
@@ -300,6 +328,10 @@ public class CustomAREffects : DefaultObserverEventHandler
 
         while ((Time.time - startTime) < journeyDuration)
         {
+            if (!spear) {
+                break;
+            }
+
             float x = (Time.time - startTime) / journeyDuration;
 
             // drag and gravity
@@ -334,12 +366,16 @@ public class CustomAREffects : DefaultObserverEventHandler
         float vvel = 3.0f;
 
         while ((Time.time - startTime) < journeyDuration)
-        {
+        {   
+            if (!spear) {
+                break;
+            }
+
             float x = (Time.time - startTime) / journeyDuration;
 
             vvel *= 0.99f;
             vvel -= 0.12f;
-      
+
             spear.transform.position += hvel * Time.deltaTime;
             spear.transform.position += new Vector3(0f, vvel * Time.deltaTime, 0f);
             spear.transform.rotation = Quaternion.Lerp(startRotation, endRotation, x);
@@ -366,6 +402,10 @@ public class CustomAREffects : DefaultObserverEventHandler
 
         while ((Time.time - startTime) < journeyDuration)
         {
+            if (!hammer) {
+                break;
+            }
+
             vvel *= 0.99f;
             vvel -= 0.08f;
 
@@ -394,6 +434,10 @@ public class CustomAREffects : DefaultObserverEventHandler
 
         while ((Time.time - startTime) < journeyDuration)
         {
+            if (!hammer) {
+                break;
+            }
+            
             vvel *= 0.99f;
             vvel -= 0.08f;
 
@@ -534,6 +578,25 @@ public class CustomAREffects : DefaultObserverEventHandler
     private void RemoveOpponentPunch() {
         if (instantiatedOpponentPunch) {
             Destroy(instantiatedOpponentPunch);
+        }
+    }
+
+    private IEnumerator GunAimAtTarget() {
+        while (playerGun) {
+            // playerGun.transform.LookAt(this.transform.position);
+            playerGun.transform.rotation = Quaternion.LookRotation(this.transform.position - playerGun.transform.position, camera.transform.up);
+            if (playerGun.transform.GetChild(0).transform.localPosition.z < 0f) { // note that this is the initial z displacement
+                playerGun.transform.GetChild(0).transform.localPosition += new Vector3 (0f, 0f, 0.1f);
+            }
+            yield return null;
+        }
+    }
+
+    public void ShootGun() {
+        if (playerGun) {
+            gunPs.transform.localRotation *= Quaternion.Euler(0, 0, 30);
+            ShowMuzzleFlash();
+            playerGun.transform.GetChild(0).transform.localPosition -= new Vector3 (0f, 0f, 0.75f);
         }
     }
 

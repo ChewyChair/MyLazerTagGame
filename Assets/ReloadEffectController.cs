@@ -40,5 +40,13 @@ public class ReloadEffectController : MonoBehaviour
     {
         reloadPanel.SetActive(false);
     }
+
+    public void PlayReloadEffect()
+    {
+        reloadPanel.SetActive(true);
+        reloadPanelAnimator.Play("ReloadPopup");
+
+        Invoke("HideReloadEffect", 1f);
+    }
 }
 

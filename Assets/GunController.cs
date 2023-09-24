@@ -56,4 +56,10 @@ public class GunController : MonoBehaviour
         shootButton.interactable = true;
     }
 
+    public void SetAmmo(int x)
+    {
+        bulletCount = x;
+        UpdateBulletText();
+    }
+
 }

@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System;
 using UnityEngine;
 
 public class HitDetection : MonoBehaviour
@@ -7,9 +8,31 @@ public class HitDetection : MonoBehaviour
     public MqttPublisher mqttPublisher;
     public MqttReceiver mqttReceiver;
     public CustomAREffects care;
-    public GrenadeController grenadeControl;
+    public ReloadEffectController reloadEffectController;
+    public GrenadeController grenadeController;
+    public ShieldController shieldController;
+    public ScoreboardController scoreboardController;
+    public GunController gunController;
     public PlayerState playerState;
     public OpponentHealth opponentHealth;
+
+    [Serializable] 
+    private class Player
+    {
+        public int hp;
+        public int bullets;
+        public int grenades;
+        public int shield_hp;
+        public int deaths;
+        public int shields;
+    }
+
+    [Serializable] 
+    private class GameState
+    {
+        public Player p1;
+        public Player p2;
+    }
 
     private class MqttMessage
     {
@@ -17,7 +40,7 @@ public class HitDetection : MonoBehaviour
         public string player_id;
         public string action;
         public bool isHit;
-        public string game_state;
+        public GameState game_state;
     }
 
     private class Result
@@ -62,85 +85,96 @@ public class HitDetection : MonoBehaviour
 
     private void UpdateVisualiser(MqttMessage x) {
         // for now we assume that the player is player 1.
-        if (x.player_id == "1") {
-            switch (x.action) {
-                case "grenade":
-                    grenadeControl.ThrowGrenade();
-                    opponentHealth.GrenadeReceived();
-                    care.OnPlayerGrenadeButtonPressed();
-                    break;
-                
-                case "spear":
-                    opponentHealth.SpearReceived();
-                    care.OnPlayerSpearButtonPressed();
-                    break;
+        if (x.isHit == true) {
+            if (x.player_id == "1") {
+                switch (x.action) {
+                    case "gun":
+                        care.ShootGun();
+                        break;
 
-                case "shield":
-                    playerState.ActivateShield();
-                    care.OnPlayerShieldButtonPressed();
-                    break;
+                    case "grenade":
+                        care.OnPlayerGrenadeButtonPressed();
+                        break;
+                    
+                    case "spear":
+                        care.OnPlayerSpearButtonPressed();
+                        break;
 
-                case "hammer":
-                    opponentHealth.HammerReceived();
-                    care.OnPlayerHammerButtonPressed();
-                    break;
+                    case "shield":
+                        care.OnPlayerShieldButtonPressed();
+                        break;
 
-                case "punch":
-                    opponentHealth.PunchReceived();
-                    care.OnPlayerPunchButtonClicked();
-                    break;
+                    case "hammer":
+                        care.OnPlayerHammerButtonPressed();
+                        break;
 
-                case "portal":
-                    opponentHealth.PortalReceived();
-                    care.OnPlayerPortalButtonClicked();
-                    break;
+                    case "punch":
+                        care.OnPlayerPunchButtonClicked();
+                        break;
 
-                default:
-                    break;
-            }
-        } else {
-            switch (x.action) {
-                case "grenade":
-                    playerState.GrenadeReceived();
-                    care.OnOpponentGrenadeButtonPressed();
-                    break;
-                
-                case "spear":
-                    playerState.SpearReceived();
-                    care.OnOpponentSpearButtonPressed();
-                    break;
+                    case "portal":
+                        care.OnPlayerPortalButtonClicked();
+                        break;
 
-                case "shield":
-                    opponentHealth.ActivateShield();
-                    care.OnOpponentShieldButtonPressed();
-                    break;
+                    case "reload":
+                        reloadEffectController.PlayReloadEffect();
+                        break;
 
-                case "hammer":
-                    playerState.HammerReceived();
-                    care.OnOpponentHammerButtonPressed();
-                    break;
+                    default: // none
+                        break;
+                }
+            } else {
+                switch (x.action) {
+                    case "gun":
+                        break;
 
-                case "punch":
-                    playerState.PunchReceived();
-                    care.OnOpponentPunchButtonClicked();
-                    break;
+                    case "grenade":
+                        care.OnOpponentGrenadeButtonPressed();
+                        break;
+                    
+                    case "spear":
+                        care.OnOpponentSpearButtonPressed();
+                        break;
 
-                case "portal":
-                    playerState.PortalReceived();
-                    care.OnOpponentPortalButtonClicked();
-                    break;
+                    case "shield":
+                        care.OnOpponentShieldButtonPressed();
+                        break;
 
-                default:
-                    break;
+                    case "hammer":
+                        care.OnOpponentHammerButtonPressed();
+                        break;
+
+                    case "punch":
+                        care.OnOpponentPunchButtonClicked();
+                        break;
+
+                    case "portal":
+                        care.OnOpponentPortalButtonClicked();
+                        break;
+
+                    default: // none
+                        break;
+                }
             }
         }
+        
         // UPDATE UI
+        GameState game_state = JsonUtility.FromJson<GameState>(JsonUtility.ToJson(x.game_state));
+        Player p1 = JsonUtility.FromJson<Player>(JsonUtility.ToJson(game_state.p1));
+        Player p2 = JsonUtility.FromJson<Player>(JsonUtility.ToJson(game_state.p2)); // TODO: CHANGE THIS
+        scoreboardController.SetScore(p2.deaths, p1.deaths);
+        grenadeController.SetGrenades(p1.grenades);
+        shieldController.SetShields(p1.shields);
+        gunController.SetAmmo(p1.bullets);
+        playerState.SetShieldHp(p1.shield_hp);
+        playerState.SetHealth(p1.hp);
+        opponentHealth.SetShieldHp(p2.shield_hp);
+        opponentHealth.SetHealth(p2.hp);
     }
 
     private IEnumerator PublishMessage(string publishMsg, float seconds) {
         yield return new WaitForSeconds(seconds);
-        mqttPublisher.Publish(publishMsg);
-        // Debug.Log("Sent result:" + publishMsg);     
+        mqttPublisher.Publish(publishMsg);    
     }
 
 }
