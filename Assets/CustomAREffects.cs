@@ -58,6 +58,7 @@ public class CustomAREffects : DefaultObserverEventHandler
         RemoveHammer();
         RemovePortal();
         RemovePunch();
+        StartCoroutine(ResetGun());
     }
 
     public void ShowBloodSpray() {
@@ -582,7 +583,7 @@ public class CustomAREffects : DefaultObserverEventHandler
     }
 
     private IEnumerator GunAimAtTarget() {
-        while (playerGun) {
+        while (playerGun && isTargetVisible) {
             // playerGun.transform.LookAt(this.transform.position);
             playerGun.transform.rotation = Quaternion.LookRotation(this.transform.position - playerGun.transform.position, camera.transform.up);
             if (playerGun.transform.GetChild(0).transform.localPosition.z < 0f) { // note that this is the initial z displacement
@@ -597,6 +598,16 @@ public class CustomAREffects : DefaultObserverEventHandler
             gunPs.transform.localRotation *= Quaternion.Euler(0, 0, 30);
             ShowMuzzleFlash();
             playerGun.transform.GetChild(0).transform.localPosition -= new Vector3 (0f, 0f, 0.75f);
+        }
+    }
+
+    public IEnumerator ResetGun() {
+        while (playerGun && !isTargetVisible) {
+            playerGun.transform.rotation = camera.transform.rotation;
+            if (playerGun.transform.GetChild(0).transform.localPosition.z < 0f) { // note that this is the initial z displacement
+                playerGun.transform.GetChild(0).transform.localPosition += new Vector3 (0f, 0f, 0.1f);
+            }
+            yield return null;
         }
     }
 
