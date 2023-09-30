@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 using Vuforia;
@@ -14,7 +15,8 @@ public class CustomAREffects : DefaultObserverEventHandler
     public GameObject spearPrefab;
     public GameObject hammerPrefab;
     public GameObject portalPrefab;
-    public GameObject punchPrefab; 
+    public GameObject punchPrefab;
+    public GameObject webPrefab;
 
     public GameObject playerGun;
 
@@ -28,15 +30,17 @@ public class CustomAREffects : DefaultObserverEventHandler
     private GameObject instantiatedSpear;
     private GameObject instantiatedHammer;
     private GameObject instantiatedPortal;
-    private GameObject instantiatedPunch;  
+    private GameObject instantiatedPunch;
+    private GameObject instantiatedWeb;
 
     private GameObject instantiatedOpponentGrenade;
-    private GameObject instantiatedOpponentShield;      
+    private GameObject instantiatedOpponentShield;
     private GameObject instantiatedOpponentExplosion;
     private GameObject instantiatedOpponentSpear;
     private GameObject instantiatedOpponentHammer;
     private GameObject instantiatedOpponentPortal;
     private GameObject instantiatedOpponentPunch;
+    private GameObject instantiatedOpponentWeb;
 
 
     protected override void OnTrackingFound()
@@ -45,6 +49,7 @@ public class CustomAREffects : DefaultObserverEventHandler
         isTargetVisible = true;
         crosshair.SetActive(true);
         StartCoroutine(GunAimAtTarget());
+        StartCoroutine(CrosshairFollowTarget());
     }
 
     protected override void OnTrackingLost()
@@ -52,41 +57,47 @@ public class CustomAREffects : DefaultObserverEventHandler
         base.OnTrackingLost();
         isTargetVisible = false;
         crosshair.SetActive(false);
+        StartCoroutine(ResetGun());
         RemoveOpponentShield();
         RemoveGrenade();
         RemoveSpear();
         RemoveHammer();
         RemovePortal();
         RemovePunch();
-        StartCoroutine(ResetGun());
     }
 
-    public void ShowBloodSpray() {
+    public void ShowBloodSpray()
+    {
         bloodSprayPs.Play();
         StartCoroutine(EndSpray());
     }
 
-    private IEnumerator EndSpray() {
+    private IEnumerator EndSpray()
+    {
         yield return new WaitForSeconds(0.1f);
         bloodSprayPs.Stop();
     }
 
-    public void ShowSparks() {
+    public void ShowSparks()
+    {
         sparkPs.Play();
         StartCoroutine(EndSparks());
     }
 
-    private IEnumerator EndSparks() {
+    private IEnumerator EndSparks()
+    {
         yield return new WaitForSeconds(0.4f);
         sparkPs.Stop();
     }
 
-    public void ShowMuzzleFlash() {
+    public void ShowMuzzleFlash()
+    {
         gunPs.Play();
         StartCoroutine(EndMuzzleFlash());
     }
 
-    private IEnumerator EndMuzzleFlash() {
+    private IEnumerator EndMuzzleFlash()
+    {
         yield return new WaitForSeconds(0.15f);
         gunPs.Stop();
     }
@@ -105,6 +116,7 @@ public class CustomAREffects : DefaultObserverEventHandler
         instantiatedOpponentGrenade = Instantiate(grenadePrefab, this.transform.position, Quaternion.identity);
         instantiatedOpponentGrenade.transform.localScale = new Vector3(2f, 2f, 2f);
         StartCoroutine(MoveGrenadeTowardsCamera(instantiatedOpponentGrenade));
+
     }
 
     public void OnOpponentShieldButtonPressed()
@@ -124,14 +136,14 @@ public class CustomAREffects : DefaultObserverEventHandler
         if (!instantiatedShield)
         {
             instantiatedShield = Instantiate(playerShieldPrefab, camera.transform.position, camera.transform.rotation);
-            
+
             StartCoroutine(ShieldFollowCamera(instantiatedShield));
         }
     }
 
     public void OnPlayerSpearButtonPressed()
     {
-        RemoveSpear(); 
+        RemoveSpear();
         Vector3 direction = this.transform.position - camera.transform.position;
         Quaternion rotation = Quaternion.LookRotation(direction);
         instantiatedSpear = Instantiate(spearPrefab, camera.transform.position, rotation * Quaternion.Euler(70, 0, 0)); // instantiate spear at 20 (90-70) degrees (pointing slightly up)
@@ -141,7 +153,7 @@ public class CustomAREffects : DefaultObserverEventHandler
 
     public void OnOpponentSpearButtonPressed()
     {
-        RemoveOpponentSpear(); 
+        RemoveOpponentSpear();
         Vector3 direction = camera.transform.position - this.transform.position;
         Quaternion rotation = Quaternion.LookRotation(direction);
         instantiatedOpponentSpear = Instantiate(spearPrefab, this.transform.position, rotation * Quaternion.Euler(70, 0, 0));
@@ -151,22 +163,50 @@ public class CustomAREffects : DefaultObserverEventHandler
 
     public void OnPlayerHammerButtonPressed()
     {
-        RemoveHammer(); 
+        RemoveHammer();
+
         Vector3 direction = this.transform.position - camera.transform.position;
         Quaternion rotation = Quaternion.LookRotation(direction);
         instantiatedHammer = Instantiate(hammerPrefab, camera.transform.position, rotation * Quaternion.Euler(0, 90, 0));
 
         StartCoroutine(MoveHammerTowardsTarget(instantiatedHammer));
+
     }
 
     public void OnOpponentHammerButtonPressed()
     {
-        RemoveOpponentHammer(); 
+        RemoveOpponentHammer();
+
         Vector3 direction = camera.transform.position - this.transform.position;
         Quaternion rotation = Quaternion.LookRotation(direction);
         instantiatedOpponentHammer = Instantiate(hammerPrefab, this.transform.position, rotation * Quaternion.Euler(0, 90, 0));
 
         StartCoroutine(MoveHammerTowardsCamera(instantiatedOpponentHammer));
+
+    }
+
+    public void OnPlayerWebButtonPressed()
+    {
+        RemoveWeb();
+
+        Vector3 direction = this.transform.position - camera.transform.position;
+        Quaternion rotation = Quaternion.LookRotation(direction);
+        instantiatedWeb = Instantiate(webPrefab, camera.transform.position, rotation);
+
+        StartCoroutine(MoveWebTowardsTarget(instantiatedWeb));
+
+    }
+
+    public void OnOpponentWebButtonPressed()
+    {
+        RemoveOpponentWeb();
+
+        Vector3 direction = camera.transform.position - this.transform.position;
+        Quaternion rotation = Quaternion.LookRotation(direction);
+        instantiatedOpponentWeb = Instantiate(webPrefab, this.transform.position, rotation);
+
+        StartCoroutine(MoveWebTowardsCamera(instantiatedOpponentWeb));
+
     }
 
     // Function to handle the Doctor Strange portal button click
@@ -176,13 +216,13 @@ public class CustomAREffects : DefaultObserverEventHandler
         RemovePortal();
 
         // Create a new portal on the target's position and make it a child of the target
-        instantiatedPortal = Instantiate(portalPrefab, this.transform.position, this.transform.rotation, this.transform);
-        instantiatedPortal.transform.localPosition -= new Vector3(8f, 0f, 0f); // move portal down so its center is 0, 0, 0
+        instantiatedPortal = Instantiate(portalPrefab, camera.transform.position, camera.transform.rotation, camera.transform);
+        instantiatedPortal.transform.localPosition += new Vector3(0f, 0f, 1f);  // appear directly in front of camera
+        instantiatedPortal.transform.localScale = new Vector3(0.4f, 0.4f, 0.4f); // make portal smaller
 
         // Start the coroutine to display the portal for a specified duration
         StartCoroutine(DisplayEffectForDuration(instantiatedPortal, 2.0f)); // Display portal for 2 seconds
 
-        StartCoroutine(ShieldLookAtCamera(instantiatedPortal)); // reusing shield function lol
     }
 
     public void OnOpponentPortalButtonClicked()
@@ -190,13 +230,17 @@ public class CustomAREffects : DefaultObserverEventHandler
         // If a portal already exists, destroy it
         RemoveOpponentPortal();
 
+
         // Create a new portal on the target's position and make it a child of the target
         instantiatedOpponentPortal = Instantiate(portalPrefab, camera.transform.position, camera.transform.rotation, camera.transform);
-        instantiatedOpponentPortal.transform.localPosition += new Vector3(0f, 0f, 1f);  // appear directly in front of camera
-        instantiatedOpponentPortal.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f); // make portal very smol
+        instantiatedOpponentPortal.transform.localPosition -= new Vector3(8f, 0f, 0f); // move portal down so its center is 0, 0, 0
 
         // Start the coroutine to display the portal for a specified duration
         StartCoroutine(DisplayEffectForDuration(instantiatedOpponentPortal, 2.0f)); // Display portal for 2 seconds
+
+        StartCoroutine(ShieldLookAtCamera(instantiatedOpponentPortal)); // reusing shield function
+
+
     }
 
     // Function to handle the Punch button click
@@ -205,12 +249,14 @@ public class CustomAREffects : DefaultObserverEventHandler
         // If a punch effect already exists, destroy it
         RemovePunch();
 
+
         // Create a new punch effect on the target's position and make it a child of the target
         instantiatedPunch = Instantiate(punchPrefab, this.transform.position, Quaternion.identity, this.transform);
         instantiatedPunch.transform.localScale = new Vector3(5f, 5f, 5f); // make beeg
 
         // Start the coroutine to display the punch effect for a specified duration
         StartCoroutine(DisplayEffectForDuration(instantiatedPunch, 1.5f)); // Display punch effect for 1.5 seconds
+
     }
 
     public void OnOpponentPunchButtonClicked()
@@ -218,12 +264,16 @@ public class CustomAREffects : DefaultObserverEventHandler
         // If a punch effect already exists, destroy it
         RemoveOpponentPunch();
 
+
+
         // Create a new punch effect on the target's position and make it a child of the target
         instantiatedOpponentPunch = Instantiate(punchPrefab, camera.transform.position, Quaternion.identity, camera.transform);
         instantiatedOpponentPunch.transform.localPosition += new Vector3(0f, 0f, 1f);  // appear directly in front of camera
 
         // Start the coroutine to display the punch effect for a specified duration
         StartCoroutine(DisplayEffectForDuration(instantiatedOpponentPunch, 1.5f)); // Display punch effect for 1.5 seconds
+
+
     }
 
     private IEnumerator MoveGrenadeTowardsTarget(GameObject grenade)
@@ -243,16 +293,16 @@ public class CustomAREffects : DefaultObserverEventHandler
 
         while ((Time.time - startTime) < journeyDuration)
         {
-            if (!grenade) {
+            if (!grenade)
+            {
                 break;
             }
-
             float x = (Time.time - startTime) / journeyDuration;
 
             // drag and gravity
             vvel *= 0.99f;
             vvel -= 0.05f;
-      
+
             grenade.transform.position += hvel * Time.deltaTime;
             grenade.transform.position += new Vector3(0f, vvel * Time.deltaTime, 0f);
             grenade.transform.rotation = Quaternion.Lerp(startRotation, endRotation, x);
@@ -260,7 +310,8 @@ public class CustomAREffects : DefaultObserverEventHandler
             yield return null;
         }
 
-        if (grenade) {
+        if (grenade)
+        {
             instantiatedExplosion = Instantiate(explosionPrefab, grenade.transform.position, Quaternion.identity);
             instantiatedExplosion.transform.localScale = new Vector3(5f, 5f, 5f);
             StartCoroutine(explosionTimeout(instantiatedExplosion));
@@ -282,20 +333,20 @@ public class CustomAREffects : DefaultObserverEventHandler
         Quaternion endRotation = Quaternion.Euler(90, 0, 0);
 
         // move it 90% of the full distance so explosion is visible otherwise it will explode inside of camera
-        Vector3 hvel = Vector3.Scale((endPosition - startPosition), new Vector3(-0.45f, -0.45f, -0.45f)); 
+        Vector3 hvel = Vector3.Scale((endPosition - startPosition), new Vector3(-0.45f, -0.45f, -0.45f));
         float vvel = 2.0f;
 
         while ((Time.time - startTime) < journeyDuration)
         {
-            if (!grenade) {
+            if (!grenade)
+            {
                 break;
             }
-
             float x = (Time.time - startTime) / journeyDuration;
 
             vvel *= 0.99f;
             vvel -= 0.04f;
-      
+
             grenade.transform.position -= hvel * Time.deltaTime;
             grenade.transform.position += new Vector3(0f, vvel * Time.deltaTime, 0f);
             grenade.transform.rotation = Quaternion.Lerp(startRotation, endRotation, x);
@@ -303,7 +354,8 @@ public class CustomAREffects : DefaultObserverEventHandler
             yield return null;
         }
 
-        if (grenade) {
+        if (grenade)
+        {
             instantiatedOpponentExplosion = Instantiate(explosionPrefab, grenade.transform.position, Quaternion.identity);
             instantiatedOpponentExplosion.transform.localScale = new Vector3(5f, 5f, 5f);
             StartCoroutine(explosionTimeout(instantiatedOpponentExplosion));
@@ -311,7 +363,7 @@ public class CustomAREffects : DefaultObserverEventHandler
 
         Destroy(grenade);
     }
-    
+
     private IEnumerator MoveSpearTowardsTarget(GameObject spear)
     {
         Vector3 startPosition = spear.transform.position;
@@ -329,16 +381,16 @@ public class CustomAREffects : DefaultObserverEventHandler
 
         while ((Time.time - startTime) < journeyDuration)
         {
-            if (!spear) {
+            if (!spear)
+            {
                 break;
             }
-
             float x = (Time.time - startTime) / journeyDuration;
 
             // drag and gravity
             vvel *= 0.99f;
             vvel -= 0.08f;
-      
+
             spear.transform.position += hvel * Time.deltaTime;
             spear.transform.position += new Vector3(0f, vvel * Time.deltaTime, 0f);
             spear.transform.rotation = Quaternion.Lerp(startRotation, endRotation, x);
@@ -362,16 +414,15 @@ public class CustomAREffects : DefaultObserverEventHandler
         Quaternion startRotation = spear.transform.rotation;
         Quaternion endRotation = spear.transform.rotation * Quaternion.Euler(40, 0, 0);
 
-        // Vector3 hvel = Vector3.Lerp(startPosition, endPosition, 1f);
         Vector3 hvel = endPosition - startPosition;
         float vvel = 3.0f;
 
         while ((Time.time - startTime) < journeyDuration)
-        {   
-            if (!spear) {
+        {
+            if (!spear)
+            {
                 break;
             }
-
             float x = (Time.time - startTime) / journeyDuration;
 
             vvel *= 0.99f;
@@ -403,10 +454,10 @@ public class CustomAREffects : DefaultObserverEventHandler
 
         while ((Time.time - startTime) < journeyDuration)
         {
-            if (!hammer) {
+            if (!hammer)
+            {
                 break;
             }
-
             vvel *= 0.99f;
             vvel -= 0.08f;
 
@@ -435,10 +486,10 @@ public class CustomAREffects : DefaultObserverEventHandler
 
         while ((Time.time - startTime) < journeyDuration)
         {
-            if (!hammer) {
+            if (!hammer)
+            {
                 break;
             }
-            
             vvel *= 0.99f;
             vvel -= 0.08f;
 
@@ -452,23 +503,93 @@ public class CustomAREffects : DefaultObserverEventHandler
         Destroy(hammer);
     }
 
-    private IEnumerator explosionTimeout(GameObject explosion) {
+    private IEnumerator MoveWebTowardsTarget(GameObject web)
+    {
+        Vector3 startPosition = web.transform.position;
+        Vector3 endPosition = this.transform.position;
+        endPosition.y -= 1f; // Adjust this value to set how much below the image we want the grenade to land.
+
+        float journeyDuration = 1f;
+        float startTime = Time.time;
+
+        Vector3 hvel = endPosition - startPosition;
+
+        float vvel = 2.0f;
+
+        while ((Time.time - startTime) < journeyDuration)
+        {
+            if (!web)
+            {
+                break;
+            }
+            vvel *= 0.99f;
+            vvel -= 0.08f;
+
+            web.transform.position += new Vector3(0f, vvel * Time.deltaTime, 0f);
+            web.transform.position += hvel * Time.deltaTime;
+            web.transform.rotation *= Quaternion.Euler(0, 0, -1440f * Time.deltaTime); // SPIN THE HAMMER
+
+            yield return null;
+        }
+
+        Destroy(web);
+    }
+
+    private IEnumerator MoveWebTowardsCamera(GameObject web)
+    {
+        Vector3 startPosition = web.transform.position;
+        Vector3 endPosition = camera.transform.position;
+        endPosition.y -= 1f; // Adjust this value to set how much below the image we want the grenade to land.
+
+        float journeyDuration = 1f;
+        float startTime = Time.time;
+
+        Vector3 hvel = endPosition - startPosition;
+
+        float vvel = 2.0f;
+
+        while ((Time.time - startTime) < journeyDuration)
+        {
+            if (!web)
+            {
+                break;
+            }
+
+            vvel *= 0.99f;
+            vvel -= 0.08f;
+
+            web.transform.position += new Vector3(0f, vvel * Time.deltaTime, 0f);
+            web.transform.position += hvel * Time.deltaTime;
+            web.transform.rotation *= Quaternion.Euler(0, 0, -1440f * Time.deltaTime); // SPIN THE HAMMER
+
+            yield return null;
+        }
+
+        Destroy(web);
+    }
+
+    private IEnumerator explosionTimeout(GameObject explosion)
+    {
         yield return new WaitForSeconds(1);
         RemoveExplosion(explosion);
     }
 
-    private IEnumerator ShieldLookAtCamera(GameObject shield) {
+    private IEnumerator ShieldLookAtCamera(GameObject shield)
+    {
         // makes opponents shield always turn towards the camera
-        while (shield) {
+        while (shield)
+        {
             shield.transform.position = this.transform.position;
             shield.transform.LookAt(camera.transform.position);
             yield return null;
         }
     }
 
-    private IEnumerator ShieldFollowCamera(GameObject shield) {
+    private IEnumerator ShieldFollowCamera(GameObject shield)
+    {
         // player shield follows camera
-        while (shield) {
+        while (shield)
+        {
             shield.transform.position = camera.transform.position;
             shield.transform.rotation = camera.transform.rotation;
             yield return null;
@@ -478,29 +599,36 @@ public class CustomAREffects : DefaultObserverEventHandler
     private IEnumerator DisplayEffectForDuration(GameObject effect, float duration)
     {
         yield return new WaitForSeconds(duration);
-        if (effect) {
+        if (effect)
+        {
             Destroy(effect);
         }
     }
 
     private void RemoveGrenade()
     {
-        if (instantiatedGrenade)
+        if (instantiatedGrenade != null)
         {
-            Destroy(instantiatedGrenade);
+            StopCoroutine(MoveGrenadeTowardsTarget(instantiatedGrenade)); // Stop the movement coroutine if it's running
+            Destroy(instantiatedGrenade); // Destroy the grenade
+            instantiatedGrenade = null;
         }
     }
 
     private void RemoveOpponentGrenade()
     {
-        if (instantiatedOpponentGrenade)
+        if (instantiatedOpponentGrenade != null)
         {
+            StopCoroutine(MoveGrenadeTowardsCamera(instantiatedOpponentGrenade));
             Destroy(instantiatedOpponentGrenade);
+            instantiatedOpponentGrenade = null;
         }
     }
 
-    public void RemovePlayerShield() {
-        if (instantiatedShield) {
+    public void RemovePlayerShield()
+    {
+        if (instantiatedShield)
+        {
             Destroy(instantiatedShield);
         }
     }
@@ -514,41 +642,71 @@ public class CustomAREffects : DefaultObserverEventHandler
         }
     }
 
-    private void RemoveExplosion(GameObject explosion) {
-        if (explosion) {
+    private void RemoveExplosion(GameObject explosion)
+    {
+        if (explosion)
+        {
             Destroy(explosion);
         }
     }
 
     private void RemoveSpear()
     {
-        if (instantiatedSpear)
+        if (instantiatedSpear != null)
         {
+            //StopCoroutine(MoveSpearTowardsTarget(instantiatedSpear));
             Destroy(instantiatedSpear);
+            //instantiatedSpear = null;
         }
     }
 
     private void RemoveOpponentSpear()
     {
-        if (instantiatedOpponentSpear)
+        if (instantiatedOpponentSpear != null)
         {
+            //StopCoroutine(MoveSpearTowardsCamera(instantiatedOpponentSpear));
             Destroy(instantiatedOpponentSpear);
+            //instantiatedOpponentSpear = null;
         }
     }
 
     private void RemoveHammer()
     {
-        if (instantiatedHammer)
+        if (instantiatedHammer != null)
         {
+            //StopCoroutine(MoveHammerTowardsTarget(instantiatedHammer));
             Destroy(instantiatedHammer);
+            //instantiatedHammer = null;
         }
     }
 
     private void RemoveOpponentHammer()
     {
-        if (instantiatedOpponentHammer)
+        if (instantiatedOpponentHammer != null)
         {
+            //StopCoroutine(MoveHammerTowardsCamera(instantiatedOpponentHammer));
             Destroy(instantiatedOpponentHammer);
+            //instantiatedOpponentHammer = null;
+        }
+    }
+
+    private void RemoveWeb()
+    {
+        if (instantiatedWeb != null)
+        {
+            //StopCoroutine(MoveWebTowardsTarget(instantiatedWeb));
+            Destroy(instantiatedWeb);
+            //instantiatedWeb = null;
+        }
+    }
+
+    private void RemoveOpponentWeb()
+    {
+        if (instantiatedOpponentWeb != null)
+        {
+            //StopCoroutine(MoveWebTowardsCamera(instantiatedOpponentWeb));
+            Destroy(instantiatedOpponentWeb);
+            //instantiatedOpponentWeb = null;
         }
     }
 
@@ -561,8 +719,10 @@ public class CustomAREffects : DefaultObserverEventHandler
         }
     }
 
-    private void RemoveOpponentPortal() {
-        if (instantiatedOpponentPortal) {
+    private void RemoveOpponentPortal()
+    {
+        if (instantiatedOpponentPortal)
+        {
             Destroy(instantiatedOpponentPortal);
         }
     }
@@ -576,16 +736,43 @@ public class CustomAREffects : DefaultObserverEventHandler
         }
     }
 
-    private void RemoveOpponentPunch() {
-        if (instantiatedOpponentPunch) {
+    private void RemoveOpponentPunch()
+    {
+        if (instantiatedOpponentPunch)
+        {
             Destroy(instantiatedOpponentPunch);
         }
     }
 
-    private IEnumerator GunAimAtTarget() {
-        while (playerGun && isTargetVisible) {
+    private IEnumerator GunAimAtTarget()
+    {
+        while (playerGun && isTargetVisible)
+        {
             // playerGun.transform.LookAt(this.transform.position);
             playerGun.transform.rotation = Quaternion.LookRotation(this.transform.position - playerGun.transform.position, camera.transform.up);
+            if (playerGun.transform.GetChild(0).transform.localPosition.z < 0f)
+            { // note that this is the initial z displacement
+                playerGun.transform.GetChild(0).transform.localPosition += new Vector3(0f, 0f, 0.1f);
+            }
+            yield return null;
+        }
+    }
+
+    public void ShootGun()
+    {
+        if (playerGun)
+        {
+            gunPs.transform.localRotation *= Quaternion.Euler(0, 0, 30);
+            ShowMuzzleFlash();
+            playerGun.transform.GetChild(0).transform.localPosition -= new Vector3(0f, 0f, 0.75f);
+        }
+    }
+
+    public IEnumerator ResetGun()
+    {
+        while (playerGun && !isTargetVisible)
+        {
+            playerGun.transform.rotation = camera.transform.rotation;
             if (playerGun.transform.GetChild(0).transform.localPosition.z < 0f) { // note that this is the initial z displacement
                 playerGun.transform.GetChild(0).transform.localPosition += new Vector3 (0f, 0f, 0.1f);
             }
@@ -593,20 +780,11 @@ public class CustomAREffects : DefaultObserverEventHandler
         }
     }
 
-    public void ShootGun() {
-        if (playerGun) {
-            gunPs.transform.localRotation *= Quaternion.Euler(0, 0, 30);
-            ShowMuzzleFlash();
-            playerGun.transform.GetChild(0).transform.localPosition -= new Vector3 (0f, 0f, 0.75f);
-        }
-    }
-
-    public IEnumerator ResetGun() {
-        while (playerGun && !isTargetVisible) {
-            playerGun.transform.rotation = camera.transform.rotation;
-            if (playerGun.transform.GetChild(0).transform.localPosition.z < 0f) { // note that this is the initial z displacement
-                playerGun.transform.GetChild(0).transform.localPosition += new Vector3 (0f, 0f, 0.1f);
-            }
+    public IEnumerator CrosshairFollowTarget()
+    {
+        while (isTargetVisible)
+        {
+            crosshair.transform.position = this.transform.position;
             yield return null;
         }
     }
