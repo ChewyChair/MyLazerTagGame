@@ -1968,6 +1968,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 19856730, guid: c6b19ebf3d832f446ab0b4d1e3a4e452, type: 3}
+      propertyPath: moveWithTransform
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -2470,7 +2474,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mqttPublisher: {fileID: 352941824}
   mqttReceiver: {fileID: 352941825}
-  care: {fileID: 0}
+  care: {fileID: 1958554951}
   reloadEffectController: {fileID: 1045308669}
   grenadeController: {fileID: 368607576}
   shieldController: {fileID: 1437024496}
