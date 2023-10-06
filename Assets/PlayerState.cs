@@ -214,8 +214,12 @@ public class PlayerState : MonoBehaviour
         shieldController.ResetShields();
     }
 
-    public void SetHealth(int x)
+    public void SetHealth(int x, bool isInit)
     {
+        if (isInit) {
+            health = x;
+            return;
+        }
         if (health > x) {
             StartCoroutine(TakeDamage(health - x, 0f));
         } else {
@@ -223,8 +227,12 @@ public class PlayerState : MonoBehaviour
         }
     }
 
-    public void SetShieldHp(int x)
+    public void SetShieldHp(int x, bool isInit)
     {
+        if (isInit) {
+            currentShieldHP = x;
+            return;
+        }
         if (currentShieldHP > x) {
             StartCoroutine(TakeDamage(currentShieldHP - x, 0f));
         } else {

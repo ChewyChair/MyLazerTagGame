@@ -16,6 +16,8 @@ public class HitDetection : MonoBehaviour
     public PlayerState playerState;
     public OpponentHealth opponentHealth;
 
+    private string player_id = null;
+
     [Serializable] 
     private class Player
     {
@@ -84,9 +86,12 @@ public class HitDetection : MonoBehaviour
     }
 
     private void UpdateVisualiser(MqttMessage x) {
+        if (player_id == null) {
+            return;
+        }
         // for now we assume that the player is player 1.
         if (x.isHit == true) {
-            if (x.player_id == "1") {
+            if (x.player_id == player_id) {
                 switch (x.action) {
                     case "gun":
                         care.ShootGun();
@@ -160,21 +165,51 @@ public class HitDetection : MonoBehaviour
         
         // UPDATE UI
         GameState game_state = JsonUtility.FromJson<GameState>(JsonUtility.ToJson(x.game_state));
-        Player p1 = JsonUtility.FromJson<Player>(JsonUtility.ToJson(game_state.p1));
-        Player p2 = JsonUtility.FromJson<Player>(JsonUtility.ToJson(game_state.p2)); // TODO: CHANGE THIS
+        Player p1, p2;
+        if (player_id == "1") {
+            p1 = JsonUtility.FromJson<Player>(JsonUtility.ToJson(game_state.p1));
+            p2 = JsonUtility.FromJson<Player>(JsonUtility.ToJson(game_state.p2)); 
+        } else {
+            p2 = JsonUtility.FromJson<Player>(JsonUtility.ToJson(game_state.p1));
+            p1 = JsonUtility.FromJson<Player>(JsonUtility.ToJson(game_state.p2)); 
+        }
+
         scoreboardController.SetScore(p2.deaths, p1.deaths);
         grenadeController.SetGrenades(p1.grenades);
         shieldController.SetShields(p1.shields);
         gunController.SetAmmo(p1.bullets);
-        playerState.SetShieldHp(p1.shield_hp);
-        playerState.SetHealth(p1.hp);
-        opponentHealth.SetShieldHp(p2.shield_hp);
-        opponentHealth.SetHealth(p2.hp);
+
+        bool isInit = (x.action == "none") ? true : false;
+
+        playerState.SetShieldHp(p1.shield_hp, isInit);
+        playerState.SetHealth(p1.hp, isInit);
+        opponentHealth.SetShieldHp(p2.shield_hp, isInit);
+        opponentHealth.SetHealth(p2.hp, isInit);
+
+        if (p1.shield_hp > 0) {
+            care.OnPlayerShieldButtonPressed();
+        }
+        if (p2.shield_hp > 0) {
+            care.OnOpponentShieldButtonPressed();
+        }
     }
 
     private IEnumerator PublishMessage(string publishMsg, float seconds) {
         yield return new WaitForSeconds(seconds);
         mqttPublisher.Publish(publishMsg);    
+    }
+
+    public void SetPlayer(string x) {
+        player_id = x;
+
+        Result res = new Result();
+        res.player_id = player_id;
+        res.action = "none";
+
+        string publishMsg = JsonUtility.ToJson(res);
+
+        // reply with hitdetection
+        mqttPublisher.Publish(publishMsg);
     }
 
 }
