@@ -69,9 +69,14 @@ public class HitDetection : MonoBehaviour
     }
 
     private void CheckForHit(MqttMessage x) {
-        Result res = new Result();
-        res.player_id = x.player_id;
-        res.action = x.action;
+        if (x.player_id != player_id) {
+            return;
+        }
+        Result res = new Result
+        {
+            player_id = x.player_id,
+            action = x.action
+        };
         // detect hit
         if (care.isTargetVisible) {
             res.isHit = true;
@@ -89,77 +94,76 @@ public class HitDetection : MonoBehaviour
         if (player_id == null) {
             return;
         }
-        // for now we assume that the player is player 1.
-        if (x.isHit == true) {
-            if (x.player_id == player_id) {
-                switch (x.action) {
-                    case "gun":
-                        care.ShootGun();
-                        break;
+        if (x.player_id == player_id) {
+            switch (x.action) {
+                case "gun":
+                    care.ShootGun(x.isHit);
+                    break;
 
-                    case "grenade":
-                        care.OnPlayerGrenadeButtonPressed();
-                        break;
-                    
-                    case "spear":
-                        care.OnPlayerSpearButtonPressed();
-                        break;
+                case "grenade":
+                    care.OnPlayerGrenadeButtonPressed();
+                    break;
+                
+                case "spear":
+                    care.OnPlayerSpearButtonPressed();
+                    break;
 
-                    case "shield":
-                        care.OnPlayerShieldButtonPressed();
-                        break;
+                case "shield":
+                    care.OnPlayerShieldButtonPressed();
+                    break;
 
-                    case "hammer":
-                        care.OnPlayerHammerButtonPressed();
-                        break;
+                case "hammer":
+                    care.OnPlayerHammerButtonPressed();
+                    break;
 
-                    case "punch":
-                        care.OnPlayerPunchButtonClicked();
-                        break;
+                case "punch":
+                    care.OnPlayerPunchButtonClicked();
+                    break;
 
-                    case "portal":
-                        care.OnPlayerPortalButtonClicked();
-                        break;
+                case "portal":
+                    care.OnPlayerPortalButtonClicked();
+                    break;
 
-                    case "reload":
-                        reloadEffectController.PlayReloadEffect();
-                        break;
+                case "reload":
+                    StartCoroutine(care.OnPlayerReload());
+                    reloadEffectController.PlayReloadEffect();
+                    break;
 
-                    default: // none
-                        break;
-                }
-            } else {
-                switch (x.action) {
-                    case "gun":
-                        break;
+                default: // none
+                    break;
+            }
+        } else {
+            switch (x.action) {
+                case "gun":
+                    care.ShootOpponentGun(x.isHit);
+                    break;
 
-                    case "grenade":
-                        care.OnOpponentGrenadeButtonPressed();
-                        break;
-                    
-                    case "spear":
-                        care.OnOpponentSpearButtonPressed();
-                        break;
+                case "grenade":
+                    care.OnOpponentGrenadeButtonPressed();
+                    break;
+                
+                case "spear":
+                    care.OnOpponentSpearButtonPressed();
+                    break;
 
-                    case "shield":
-                        care.OnOpponentShieldButtonPressed();
-                        break;
+                case "shield":
+                    care.OnOpponentShieldButtonPressed();
+                    break;
 
-                    case "hammer":
-                        care.OnOpponentHammerButtonPressed();
-                        break;
+                case "hammer":
+                    care.OnOpponentHammerButtonPressed();
+                    break;
 
-                    case "punch":
-                        care.OnOpponentPunchButtonClicked();
-                        break;
+                case "punch":
+                    care.OnOpponentPunchButtonClicked();
+                    break;
 
-                    case "portal":
-                        care.OnOpponentPortalButtonClicked();
-                        break;
+                case "portal":
+                    care.OnOpponentPortalButtonClicked();
+                    break;
 
-                    default: // none
-                        break;
-                }
+                default: // none
+                    break;
             }
         }
         
@@ -179,7 +183,7 @@ public class HitDetection : MonoBehaviour
         shieldController.SetShields(p1.shields);
         gunController.SetAmmo(p1.bullets);
 
-        bool isInit = (x.action == "none") ? true : false;
+        bool isInit = x.action == "none";
 
         playerState.SetShieldHp(p1.shield_hp, isInit);
         playerState.SetHealth(p1.hp, isInit);
@@ -202,9 +206,11 @@ public class HitDetection : MonoBehaviour
     public void SetPlayer(string x) {
         player_id = x;
 
-        Result res = new Result();
-        res.player_id = player_id;
-        res.action = "none";
+        Result res = new Result
+        {
+            player_id = player_id,
+            action = "none"
+        };
 
         string publishMsg = JsonUtility.ToJson(res);
 

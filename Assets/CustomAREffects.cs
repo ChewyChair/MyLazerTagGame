@@ -14,21 +14,28 @@ public class CustomAREffects : DefaultObserverEventHandler
     public GameObject explosionPrefab;
     public GameObject spearPrefab;
     public GameObject hammerPrefab;
+    public GameObject lightningExplosionPrefab;
     public GameObject portalPrefab;
     public GameObject punchPrefab;
     public GameObject webPrefab;
 
     public GameObject playerGun;
+    public GameObject opponentGun;
+    public GameObject bulletPrefab;
 
     public ParticleSystem bloodSprayPs;
     public ParticleSystem sparkPs;
-    public ParticleSystem gunPs;
+    public ParticleSystem playerGunPs;
+    public ParticleSystem playerCasingPs;
+    public ParticleSystem playerSmokePs;
+    public ParticleSystem opponentGunPs;
 
     private GameObject instantiatedGrenade;
     private GameObject instantiatedShield;
     private GameObject instantiatedExplosion;
     private GameObject instantiatedSpear;
     private GameObject instantiatedHammer;
+    private GameObject instantiatedLightningExplosion;
     private GameObject instantiatedPortal;
     private GameObject instantiatedPunch;
     private GameObject instantiatedWeb;
@@ -38,6 +45,7 @@ public class CustomAREffects : DefaultObserverEventHandler
     private GameObject instantiatedOpponentExplosion;
     private GameObject instantiatedOpponentSpear;
     private GameObject instantiatedOpponentHammer;
+    private GameObject instantiatedOpponentLightningExplosion;
     private GameObject instantiatedOpponentPortal;
     private GameObject instantiatedOpponentPunch;
     private GameObject instantiatedOpponentWeb;
@@ -50,6 +58,8 @@ public class CustomAREffects : DefaultObserverEventHandler
         crosshair.SetActive(true);
         StartCoroutine(GunAimAtTarget());
         StartCoroutine(CrosshairFollowTarget());
+        opponentGun.SetActive(true);
+        StartCoroutine(OpponentGunAimAtCamera());
     }
 
     protected override void OnTrackingLost()
@@ -64,6 +74,7 @@ public class CustomAREffects : DefaultObserverEventHandler
         RemoveHammer();
         RemovePortal();
         RemovePunch();
+        opponentGun.SetActive(false);
     }
 
     public void ShowBloodSpray()
@@ -90,16 +101,24 @@ public class CustomAREffects : DefaultObserverEventHandler
         sparkPs.Stop();
     }
 
-    public void ShowMuzzleFlash()
+    public void ShowMuzzleFlash(bool isPlayer)
     {
-        gunPs.Play();
-        StartCoroutine(EndMuzzleFlash());
+        if (isPlayer) {
+            playerGunPs.Play();
+        } else {
+            opponentGunPs.Play();
+        }
+        StartCoroutine(EndMuzzleFlash(isPlayer));
     }
 
-    private IEnumerator EndMuzzleFlash()
+    private IEnumerator EndMuzzleFlash(bool isPlayer)
     {
-        yield return new WaitForSeconds(0.15f);
-        gunPs.Stop();
+        yield return new WaitForSeconds(0.1f);
+        if (isPlayer) {
+            playerGunPs.Stop();
+        } else {
+            opponentGunPs.Stop();
+        }
     }
 
     public void OnPlayerGrenadeButtonPressed()
@@ -147,7 +166,7 @@ public class CustomAREffects : DefaultObserverEventHandler
         Vector3 direction = this.transform.position - camera.transform.position;
         Quaternion rotation = Quaternion.LookRotation(direction);
         instantiatedSpear = Instantiate(spearPrefab, camera.transform.position, rotation * Quaternion.Euler(70, 0, 0)); // instantiate spear at 20 (90-70) degrees (pointing slightly up)
-        instantiatedSpear.transform.localScale = new Vector3(2f, 2f, 2f);
+        instantiatedSpear.transform.localScale = new Vector3(1f, 1f, 1f);
         StartCoroutine(MoveSpearTowardsTarget(instantiatedSpear));
     }
 
@@ -157,7 +176,7 @@ public class CustomAREffects : DefaultObserverEventHandler
         Vector3 direction = camera.transform.position - this.transform.position;
         Quaternion rotation = Quaternion.LookRotation(direction);
         instantiatedOpponentSpear = Instantiate(spearPrefab, this.transform.position, rotation * Quaternion.Euler(70, 0, 0));
-        instantiatedOpponentSpear.transform.localScale = new Vector3(2f, 2f, 2f);
+        instantiatedOpponentSpear.transform.localScale = new Vector3(1f, 1f, 1f);
         StartCoroutine(MoveSpearTowardsCamera(instantiatedOpponentSpear));
     }
 
@@ -468,6 +487,12 @@ public class CustomAREffects : DefaultObserverEventHandler
             yield return null;
         }
 
+        if (hammer)
+        {
+            instantiatedLightningExplosion = Instantiate(lightningExplosionPrefab, hammer.transform.position, Quaternion.identity);
+            instantiatedLightningExplosion.transform.localScale = new Vector3(5f, 5f, 5f);
+        }
+
         Destroy(hammer);
     }
 
@@ -498,6 +523,12 @@ public class CustomAREffects : DefaultObserverEventHandler
             hammer.transform.rotation *= Quaternion.Euler(0, 0, -1440f * Time.deltaTime); // SPIN THE HAMMER
 
             yield return null;
+        }
+
+        if (hammer)
+        {
+            instantiatedLightningExplosion = Instantiate(lightningExplosionPrefab, hammer.transform.position, Quaternion.identity);
+            instantiatedLightningExplosion.transform.localScale = new Vector3(5f, 5f, 5f);
         }
 
         Destroy(hammer);
@@ -758,14 +789,91 @@ public class CustomAREffects : DefaultObserverEventHandler
         }
     }
 
-    public void ShootGun()
+    private int RandomSign()
     {
-        if (playerGun)
+        float x = UnityEngine.Random.Range(-1f, 1f);
+        return (x > 0) ?  1 : -1;
+    }
+
+    // changed to burst fire
+    public void ShootGun(bool isHit)
+    {
+        StartCoroutine(FireBurst(isHit));
+    }
+
+    private IEnumerator FireBurst(bool isHit)
+    {
+        int i = 0;
+        while (i < 3)
         {
-            gunPs.transform.localRotation *= Quaternion.Euler(0, 0, 30);
-            ShowMuzzleFlash();
-            playerGun.transform.GetChild(0).transform.localPosition -= new Vector3(0f, 0f, 0.75f);
+            if (playerGun)
+            {
+                playerGunPs.transform.localRotation *= Quaternion.Euler(0, 0, UnityEngine.Random.Range(0f, 360f));
+
+                Vector3 spread;
+                if (isHit) {
+                    spread = playerGun.transform.rotation * new Vector3(UnityEngine.Random.Range(-1f, 1f), UnityEngine.Random.Range(-1f, 1f), 0);
+                } else {
+                    spread = playerGun.transform.rotation * new Vector3(RandomSign() * UnityEngine.Random.Range(10f, 20f), RandomSign() *  UnityEngine.Random.Range(10f, 20f), 0);
+                }
+
+                Vector3 dir = playerGun.transform.rotation * new Vector3(0, 0, 100f) + spread; 
+
+                GameObject bullet = Instantiate(bulletPrefab, playerGunPs.transform.position, playerGun.transform.rotation * Quaternion.Euler(90f, 0, 0));
+                StartCoroutine(HandleBullet(bullet, dir));
+                ShowMuzzleFlash(true);
+                playerCasingPs.Play();
+                playerGun.transform.GetChild(0).transform.localPosition -= new Vector3(0f, 0f, 0.75f);
+                i++;
+                yield return new WaitForSeconds(0.1f);
+            }
         }
+        playerSmokePs.Play();
+    }
+
+    public void ShootOpponentGun(bool isHit)
+    {
+        StartCoroutine(OpponentFireBurst(isHit));
+    }
+
+    private IEnumerator OpponentFireBurst(bool isHit)
+    {
+        int i = 0;
+        while (i < 3)
+        {
+            if (opponentGun)
+            {
+                opponentGunPs.transform.localRotation *= Quaternion.Euler(0, 0, UnityEngine.Random.Range(0f, 360f));
+
+                Vector3 spread = new Vector3(UnityEngine.Random.Range(-1f, 1f), UnityEngine.Random.Range(-1f, 1f), UnityEngine.Random.Range(-1f, 1f));
+                Vector3 dir = opponentGun.transform.rotation * new Vector3(0, 0, 100f) + spread; 
+
+                GameObject bullet = Instantiate(bulletPrefab, opponentGun.transform.position, Quaternion.identity);
+                StartCoroutine(HandleBullet(bullet, dir));
+                ShowMuzzleFlash(false);
+                opponentGun.transform.GetChild(0).transform.localPosition -= new Vector3(0f, 0f, 0.75f);
+                i++;
+                yield return new WaitForSeconds(0.1f);
+            }
+        }
+    }
+
+    private IEnumerator HandleBullet(GameObject bullet, Vector3 dir)
+    {
+        float journeyDuration = 0.1f;
+        float startTime = Time.time;
+
+        bullet.transform.LookAt(dir);
+        bullet.transform.rotation *= Quaternion.Euler(90f, 0f, 0f);
+
+        while ((Time.time - startTime) < journeyDuration)
+        {
+            bullet.transform.position += dir * Time.deltaTime;
+
+            yield return null;
+        }
+
+        Destroy(bullet);
     }
 
     public IEnumerator ResetGun()
@@ -780,11 +888,41 @@ public class CustomAREffects : DefaultObserverEventHandler
         }
     }
 
+    public IEnumerator OnPlayerReload()
+    {
+        float startTime = Time.time;
+        float animTime = 0.5f;
+        while ((Time.time - startTime) < animTime)
+        {
+            if ((Time.time - startTime) < animTime / 2) { 
+                playerGun.transform.GetChild(0).transform.GetChild(1).transform.localPosition -= new Vector3 (0f, 0.12f, 0f);
+            } else {
+                playerGun.transform.GetChild(0).transform.GetChild(1).transform.localPosition += new Vector3 (0f, 0.12f, 0f);
+            }
+            yield return null;
+        }
+        playerGun.transform.GetChild(0).transform.GetChild(1).transform.localPosition = new Vector3 (0f, 0f, 0f); // failsafe
+        yield return null;
+    }
+
     public IEnumerator CrosshairFollowTarget()
     {
         while (isTargetVisible)
         {
             crosshair.transform.position = this.transform.position;
+            yield return null;
+        }
+    }
+
+    private IEnumerator OpponentGunAimAtCamera()
+    {
+        while (opponentGun && isTargetVisible)
+        {
+            opponentGun.transform.rotation = Quaternion.LookRotation(camera.transform.position - opponentGun.transform.position, camera.transform.up);
+            if (opponentGun.transform.GetChild(0).transform.localPosition.z < 0f)
+            { // note that this is the initial z displacement
+                opponentGun.transform.GetChild(0).transform.localPosition += new Vector3(0f, 0f, 0.1f);
+            }
             yield return null;
         }
     }
