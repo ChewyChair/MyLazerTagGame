@@ -19,6 +19,8 @@ public class CustomAREffects : DefaultObserverEventHandler
     public GameObject portalPrefab;
     public GameObject punchPrefab;
     public GameObject webPrefab;
+    public GameObject webHitPrefab;
+    public GameObject webPs;
 
     public GameObject playerGun;
     public GameObject opponentGun;
@@ -213,7 +215,9 @@ public class CustomAREffects : DefaultObserverEventHandler
 
         Vector3 direction = this.transform.position - camera.transform.position;
         Quaternion rotation = Quaternion.LookRotation(direction);
+        GameObject webTrail = Instantiate(webPs, camera.transform.position, rotation);
         instantiatedWeb = Instantiate(webPrefab, camera.transform.position, rotation);
+        instantiatedWeb.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
 
         StartCoroutine(MoveWebTowardsTarget(instantiatedWeb));
 
@@ -225,7 +229,9 @@ public class CustomAREffects : DefaultObserverEventHandler
 
         Vector3 direction = camera.transform.position - this.transform.position;
         Quaternion rotation = Quaternion.LookRotation(direction);
+        GameObject webTrail = Instantiate(webPs, this.transform.position, rotation);
         instantiatedOpponentWeb = Instantiate(webPrefab, this.transform.position, rotation);
+        instantiatedOpponentWeb.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
 
         StartCoroutine(MoveWebTowardsCamera(instantiatedOpponentWeb));
 
@@ -274,7 +280,7 @@ public class CustomAREffects : DefaultObserverEventHandler
 
         // Create a new punch effect on the target's position and make it a child of the target
         instantiatedPunch = Instantiate(punchPrefab, this.transform.position, Quaternion.identity, this.transform);
-        instantiatedPunch.transform.localScale = new Vector3(5f, 5f, 5f); // make beeg
+        instantiatedPunch.transform.localScale = new Vector3(2f, 2f, 2f); // make beeg
 
         // Start the coroutine to display the punch effect for a specified duration
         StartCoroutine(DisplayEffectForDuration(instantiatedPunch, 1.5f)); // Display punch effect for 1.5 seconds
@@ -335,7 +341,7 @@ public class CustomAREffects : DefaultObserverEventHandler
         if (grenade)
         {
             instantiatedExplosion = Instantiate(explosionPrefab, grenade.transform.position, Quaternion.identity);
-            instantiatedExplosion.transform.localScale = new Vector3(5f, 5f, 5f);
+            instantiatedExplosion.transform.localScale = new Vector3(8f, 8f, 8f);
             StartCoroutine(explosionTimeout(instantiatedExplosion));
         }
 
@@ -379,7 +385,7 @@ public class CustomAREffects : DefaultObserverEventHandler
         if (grenade)
         {
             instantiatedOpponentExplosion = Instantiate(explosionPrefab, grenade.transform.position, Quaternion.identity);
-            instantiatedOpponentExplosion.transform.localScale = new Vector3(5f, 5f, 5f);
+            instantiatedOpponentExplosion.transform.localScale = new Vector3(8f, 8f, 8f);
             StartCoroutine(explosionTimeout(instantiatedOpponentExplosion));
         }
 
@@ -568,6 +574,7 @@ public class CustomAREffects : DefaultObserverEventHandler
             {
                 break;
             }
+
             vvel *= 0.99f;
             vvel -= 0.08f;
 
@@ -576,6 +583,12 @@ public class CustomAREffects : DefaultObserverEventHandler
             web.transform.rotation *= Quaternion.Euler(0, 0, -1440f * Time.deltaTime); // SPIN THE HAMMER
 
             yield return null;
+        }
+
+        if (web)
+        {
+            GameObject w = Instantiate(webHitPrefab, web.transform.position, Quaternion.identity);
+            w.transform.localScale = new Vector3(5f, 5f, 5f);
         }
 
         Destroy(web);
@@ -609,6 +622,12 @@ public class CustomAREffects : DefaultObserverEventHandler
             web.transform.rotation *= Quaternion.Euler(0, 0, -1440f * Time.deltaTime); // SPIN THE HAMMER
 
             yield return null;
+        }
+
+        if (web)
+        {
+            GameObject w = Instantiate(webHitPrefab, web.transform.position, Quaternion.identity);
+            w.transform.localScale = new Vector3(5f, 5f, 5f);
         }
 
         Destroy(web);

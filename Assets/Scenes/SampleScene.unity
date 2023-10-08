@@ -10663,8 +10663,10 @@ MonoBehaviour:
   hammerPrefab: {fileID: 648062374074719334, guid: 5cecee28d0f640240ae32b25aac5a46e, type: 3}
   lightningExplosionPrefab: {fileID: 2965222256817593503, guid: 9b1dbf69b4afa09479c1d0a55a620fee, type: 3}
   portalPrefab: {fileID: 8338314078245459324, guid: 9b3d6e27e336b3545b76a4e5b29b75c8, type: 3}
-  punchPrefab: {fileID: 5024009746357069194, guid: ec3f674830402cc45bce805cf6493db7, type: 3}
+  punchPrefab: {fileID: 4535006216103734310, guid: b62655e26b13bf944938e5ab5e154fa5, type: 3}
   webPrefab: {fileID: 1411084896875576679, guid: af27b77033d6a024dacbd7b8ac2d04d7, type: 3}
+  webHitPrefab: {fileID: 4924508274929071776, guid: fa08b8fef2ad89245834325fe3cae102, type: 3}
+  webPs: {fileID: 1899724461870960, guid: cfe7c93c250ca864288f7c21d4ddd6a8, type: 3}
   playerGun: {fileID: 5150104982931748401}
   opponentGun: {fileID: 260535604}
   bulletPrefab: {fileID: 122648, guid: 1165556b13526434f9a9bd40fe0c8c6f, type: 3}
