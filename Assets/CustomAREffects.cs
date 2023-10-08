@@ -13,6 +13,7 @@ public class CustomAREffects : DefaultObserverEventHandler
     public GameObject playerShieldPrefab; //adjusted forwards and downwards so player can see over it when its attached to camera
     public GameObject explosionPrefab;
     public GameObject spearPrefab;
+    public GameObject spearHitPrefab;
     public GameObject hammerPrefab;
     public GameObject lightningExplosionPrefab;
     public GameObject portalPrefab;
@@ -34,6 +35,7 @@ public class CustomAREffects : DefaultObserverEventHandler
     private GameObject instantiatedShield;
     private GameObject instantiatedExplosion;
     private GameObject instantiatedSpear;
+    private GameObject instantiatedSpearHitEffect;
     private GameObject instantiatedHammer;
     private GameObject instantiatedLightningExplosion;
     private GameObject instantiatedPortal;
@@ -44,6 +46,7 @@ public class CustomAREffects : DefaultObserverEventHandler
     private GameObject instantiatedOpponentShield;
     private GameObject instantiatedOpponentExplosion;
     private GameObject instantiatedOpponentSpear;
+    private GameObject instantiatedOpponentSpearHitEffect;
     private GameObject instantiatedOpponentHammer;
     private GameObject instantiatedOpponentLightningExplosion;
     private GameObject instantiatedOpponentPortal;
@@ -418,6 +421,12 @@ public class CustomAREffects : DefaultObserverEventHandler
             yield return null;
         }
 
+        if (spear)
+        {
+            instantiatedSpearHitEffect = Instantiate(spearHitPrefab, spear.transform.position, Quaternion.identity);
+            instantiatedSpearHitEffect.transform.localScale = new Vector3(3f, 3f, 3f);
+        }
+
         Destroy(spear);
     }
 
@@ -453,6 +462,12 @@ public class CustomAREffects : DefaultObserverEventHandler
             spear.transform.GetChild(0).transform.rotation *= Quaternion.Euler(0, 180f * Time.deltaTime, 0); // SPIN
 
             yield return null;
+        }
+
+        if (spear)
+        {
+            instantiatedOpponentSpearHitEffect = Instantiate(spearHitPrefab, spear.transform.position, Quaternion.identity);
+            instantiatedOpponentSpearHitEffect.transform.localScale = new Vector3(3f, 3f, 3f);
         }
 
         Destroy(spear);
@@ -888,7 +903,12 @@ public class CustomAREffects : DefaultObserverEventHandler
         }
     }
 
-    public IEnumerator OnPlayerReload()
+    public void OnPlayerReload()
+    {
+        StartCoroutine(PlayerReload());
+    }
+
+    public IEnumerator PlayerReload()
     {
         float startTime = Time.time;
         float animTime = 0.5f;

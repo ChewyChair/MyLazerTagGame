@@ -151,7 +151,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 198074213724099420, guid: d4eca0104b0fa924aa19a952e6d45482, type: 3}
       propertyPath: InitialModule.startSize.scalar
-      value: 1
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 198074213724099420, guid: d4eca0104b0fa924aa19a952e6d45482, type: 3}
       propertyPath: NoiseModule.scrollSpeed.scalar
@@ -163,7 +163,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 198074213724099420, guid: d4eca0104b0fa924aa19a952e6d45482, type: 3}
       propertyPath: InitialModule.startColor.maxColor.g
-      value: 0.30544534
+      value: 0.9911946
       objectReference: {fileID: 0}
     - target: {fileID: 198074213724099420, guid: d4eca0104b0fa924aa19a952e6d45482, type: 3}
       propertyPath: InitialModule.startColor.maxColor.r

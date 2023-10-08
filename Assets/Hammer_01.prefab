@@ -242,6 +242,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Lightning aura
       objectReference: {fileID: 0}
+    - target: {fileID: 8445978410991379322, guid: 782dc7613252e0844afd672dac1ef7ee, type: 3}
+      propertyPath: InitialModule.startColor.maxColor.a
+      value: 0.33333334
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

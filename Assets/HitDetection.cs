@@ -124,8 +124,12 @@ public class HitDetection : MonoBehaviour
                     care.OnPlayerPortalButtonClicked();
                     break;
 
+                case "web":
+                    care.OnPlayerWebButtonPressed();
+                    break;
+
                 case "reload":
-                    StartCoroutine(care.OnPlayerReload());
+                    care.OnPlayerReload();
                     reloadEffectController.PlayReloadEffect();
                     break;
 
@@ -160,6 +164,10 @@ public class HitDetection : MonoBehaviour
 
                 case "portal":
                     care.OnOpponentPortalButtonClicked();
+                    break;
+
+                case "web":
+                    care.OnOpponentWebButtonPressed();
                     break;
 
                 default: // none
