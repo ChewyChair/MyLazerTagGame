@@ -396,7 +396,7 @@ public class CustomAREffects : DefaultObserverEventHandler
     {
         Vector3 startPosition = spear.transform.position;
         Vector3 endPosition = this.transform.position;
-        endPosition.y += 1f; // Adjust this value to set how much below the image we want the grenade to land.
+        // endPosition.y -= 1f; // Adjust this value to set how much below the image we want the grenade to land.
 
         float journeyDuration = 1f;
         float startTime = Time.time;

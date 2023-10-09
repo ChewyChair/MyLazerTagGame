@@ -84,7 +84,7 @@ public class PlayerState : MonoBehaviour
         {
             // Increase shield bar smoothly
             lerpTimer += Time.deltaTime;
-            float percentComplete = lerpTimer / chipSpeed;
+            float percentComplete = 0.3f * lerpTimer / chipSpeed;
             percentComplete = percentComplete * percentComplete;  // Quadratic interpolation for smoother transition
             shieldBar.fillAmount = Mathf.Lerp(fill, sFraction, percentComplete);
         }
