@@ -19,7 +19,7 @@ MonoBehaviour:
     width: 1920
     height: 997
   m_ShowMode: 4
-  m_Title: Simulator
+  m_Title: Hierarchy
   m_RootView: {fileID: 2}
   m_MinSize: {x: 875, y: 300}
   m_MaxSize: {x: 10000, y: 10000}
@@ -118,7 +118,7 @@ MonoBehaviour:
   m_MinSize: {x: 400, y: 100}
   m_MaxSize: {x: 32384, y: 16192}
   vertical: 0
-  controlID: 53
+  controlID: 315
 --- !u!114 &6
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -143,7 +143,7 @@ MonoBehaviour:
   m_MinSize: {x: 400, y: 100}
   m_MaxSize: {x: 32384, y: 16192}
   vertical: 1
-  controlID: 54
+  controlID: 316
 --- !u!114 &7
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -170,7 +170,7 @@ MonoBehaviour:
   m_MinSize: {x: 400, y: 50}
   m_MaxSize: {x: 32384, y: 8096}
   vertical: 0
-  controlID: 55
+  controlID: 317
 --- !u!114 &8
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -190,8 +190,8 @@ MonoBehaviour:
     y: 0
     width: 286
     height: 652
-  m_MinSize: {x: 201, y: 221}
-  m_MaxSize: {x: 4001, y: 4021}
+  m_MinSize: {x: 200, y: 200}
+  m_MaxSize: {x: 4000, y: 4000}
   m_ActualView: {fileID: 14}
   m_Panes:
   - {fileID: 14}
@@ -216,8 +216,8 @@ MonoBehaviour:
     y: 0
     width: 257
     height: 652
-  m_MinSize: {x: 202, y: 221}
-  m_MaxSize: {x: 4002, y: 4021}
+  m_MinSize: {x: 200, y: 200}
+  m_MaxSize: {x: 4000, y: 4000}
   m_ActualView: {fileID: 13}
   m_Panes:
   - {fileID: 13}
@@ -241,15 +241,15 @@ MonoBehaviour:
     serializedVersion: 2
     x: 543
     y: 0
-    width: 1040
+    width: 743
     height: 652
-  m_MinSize: {x: 202, y: 221}
-  m_MaxSize: {x: 4002, y: 4021}
-  m_ActualView: {fileID: 16}
+  m_MinSize: {x: 200, y: 200}
+  m_MaxSize: {x: 4000, y: 4000}
+  m_ActualView: {fileID: 20}
   m_Panes:
   - {fileID: 16}
-  - {fileID: 17}
-  m_Selected: 0
+  - {fileID: 20}
+  m_Selected: 1
   m_LastSelected: 1
 --- !u!114 &11
 MonoBehaviour:
@@ -266,15 +266,15 @@ MonoBehaviour:
   m_Children: []
   m_Position:
     serializedVersion: 2
-    x: 1583
+    x: 1286
     y: 0
-    width: 337
+    width: 634
     height: 652
-  m_MinSize: {x: 276, y: 121}
-  m_MaxSize: {x: 4001, y: 4021}
-  m_ActualView: {fileID: 18}
+  m_MinSize: {x: 275, y: 100}
+  m_MaxSize: {x: 4000, y: 4000}
+  m_ActualView: {fileID: 17}
   m_Panes:
-  - {fileID: 18}
+  - {fileID: 17}
   m_Selected: 0
   m_LastSelected: 0
 --- !u!114 &12
@@ -287,7 +287,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 1
   m_Script: {fileID: 12006, guid: 0000000000000000e000000000000000, type: 0}
-  m_Name: ProjectBrowser
+  m_Name: ConsoleWindow
   m_EditorClassIdentifier: 
   m_Children: []
   m_Position:
@@ -296,14 +296,14 @@ MonoBehaviour:
     y: 652
     width: 1920
     height: 295
-  m_MinSize: {x: 230, y: 271}
-  m_MaxSize: {x: 10000, y: 10021}
+  m_MinSize: {x: 100, y: 100}
+  m_MaxSize: {x: 4000, y: 4000}
   m_ActualView: {fileID: 19}
   m_Panes:
+  - {fileID: 18}
   - {fileID: 19}
-  - {fileID: 20}
-  m_Selected: 0
-  m_LastSelected: 1
+  m_Selected: 1
+  m_LastSelected: 0
 --- !u!114 &13
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -855,9 +855,9 @@ MonoBehaviour:
   m_PlayAudio: 0
   m_AudioPlay: 0
   m_Position:
-    m_Target: {x: 1881.2001, y: 925.93164, z: 53.16983}
+    m_Target: {x: 1136.5, y: 536.5, z: 0}
     speed: 2
-    m_Value: {x: 1881.2001, y: 925.93164, z: 53.16983}
+    m_Value: {x: 1136.5, y: 536.5, z: 0}
   m_RenderMode: 0
   m_CameraMode:
     drawMode: 0
@@ -903,13 +903,13 @@ MonoBehaviour:
     m_GridAxis: 1
     m_gridOpacity: 0.5
   m_Rotation:
-    m_Target: {x: -0.076734185, y: 0.0009112686, z: -0.000055683446, w: -0.99706334}
+    m_Target: {x: -0.32648477, y: 0.23422036, z: -0.083847746, w: -0.9118903}
     speed: 2
-    m_Value: {x: -0.076733254, y: 0.0009112575, z: -0.00005568277, w: -0.99705124}
+    m_Value: {x: -0.32648057, y: 0.23421735, z: -0.083846666, w: -0.9118786}
   m_Size:
-    m_Target: 351.49777
+    m_Target: 527.8802
     speed: 2
-    m_Value: 351.49777
+    m_Value: 527.8802
   m_Ortho:
     m_Target: 0
     speed: 2
@@ -971,23 +971,23 @@ MonoBehaviour:
   m_SceneHierarchy:
     m_TreeViewState:
       scrollPos: {x: 0, y: 0}
-      m_SelectedIDs: c26e0000
-      m_LastClickedID: 28354
-      m_ExpandedIDs: 26fbffffb86b0000106c00001c6c0000326c0000806c0000ea6c0000bc6d0000fc6d0000686e0000926e0000
+      m_SelectedIDs: 
+      m_LastClickedID: 0
+      m_ExpandedIDs: f2bbfcff54c1fcff6acefcffd0cefcff5ed9fcffa8e1fcff0ae7fcffb8f7fcff0af8fcff9802fdff5a08fdffbc0dfdff741afdffc61afdff5425fdff162bfdff7830fdffc03cfdff2242fdff584cfdffaa4cfdff3857fdfffa5cfdff5c62fdff706efdffc26efdff5079fdff127ffdff7484fdffd08efdff228ffdffb099fdff729ffdffd4a4fdff66b0fdffb8b0fdff46bbfdff08c1fdff6ac6fdff8ad3fdffdcd3fdff6adefdff2ce4fdff8ee9fdff62f4fdffb4f4fdff42fffdff0405feff660afeff0c16feff5e16feffec20feffac26feff0e2cfefff840feff5e41feffec4bfeffae51feff1057feffa863feff0e64feff9c6efeff5e74feffc079feff7a87feffe087feff6e92feff3098feff929dfeffb4a8feff06a9feff94b3feff56b9feffb8befeff30c9feff82c9feff10d4feffd0d9feff32dffeffe4eefeff4aeffeffd8f9feff9afffefffc04ffff6810ffffce10ffff641bffff3221ffffa426ffff762cffffd235ffff3836ffff1e3bffff963bffffe83bffff7044ffffd644ffffbc49ffff2a4affff7c4affffe24bffff344cffffda4dffff364effff3e58ffffca58ffff1c5effffa25efffff65effff0e66ffff026cffffd271ffff5e84ffff2285ffffa48fffff6c95ffffcc9affffa4a4ffff2eeb00003eeb0000f6e40100c82a0300664e0300a4500300c2520300
       m_RenameOverlay:
         m_UserAcceptedRename: 0
-        m_Name: 
-        m_OriginalName: 
+        m_Name: ARCamera
+        m_OriginalName: ARCamera
         m_EditFieldRect:
           serializedVersion: 2
           x: 0
           y: 0
           width: 0
           height: 0
-        m_UserData: 0
+        m_UserData: 216678
         m_IsWaitingForDelay: 0
         m_IsRenaming: 0
-        m_OriginalEventType: 11
+        m_OriginalEventType: 0
         m_IsRenamingFilename: 0
         m_ClientGUIView: {fileID: 8}
       m_SearchString: 
@@ -1076,74 +1076,6 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 13974, guid: 0000000000000000e000000000000000, type: 0}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_MinSize: {x: 200, y: 200}
-  m_MaxSize: {x: 4000, y: 4000}
-  m_TitleContent:
-    m_Text: Simulator
-    m_Image: {fileID: 8720083202187608617, guid: 0000000000000000d000000000000000, type: 0}
-    m_Tooltip: 
-  m_Pos:
-    serializedVersion: 2
-    x: 543
-    y: 73
-    width: 1038
-    height: 631
-  m_SerializedDataModeController:
-    m_DataMode: 0
-    m_PreferredDataMode: 0
-    m_SupportedDataModes: 
-    isAutomatic: 1
-  m_ViewDataDictionary: {fileID: 0}
-  m_OverlayCanvas:
-    m_LastAppliedPresetName: Default
-    m_SaveData: []
-    m_OverlaysVisible: 1
-  m_SerializedViewNames:
-  - UnityEditor.GameView
-  m_SerializedViewValues:
-  - C:\Users\zk\MyLazerTagGame\Library\PlayModeViewStates\5b3373694b9b15a4090737ac4f54023c
-  m_PlayModeViewName: Device Simulator
-  m_ShowGizmos: 0
-  m_TargetDisplay: 0
-  m_ClearColor: {r: 0, g: 0, b: 0, a: 1}
-  m_TargetSize: {x: 2280, y: 1080}
-  m_TextureFilterMode: 0
-  m_TextureHideFlags: 61
-  m_RenderIMGUI: 1
-  m_EnterPlayModeBehavior: 2
-  m_UseMipMap: 0
-  m_SimulatorState:
-    controlPanelVisible: 1
-    controlPanelWidth: 50
-    controlPanelFoldoutKeys:
-    - UnityEditor.DeviceSimulation.ApplicationSettingsPlugin
-    controlPanelFoldoutValues: 01
-    pluginNames:
-    - UnityEditor.DeviceSimulation.ApplicationSettingsPlugin
-    - UnityEngine.InputSystem.Editor.InputSystemPlugin
-    pluginStates:
-    - '{}'
-    - '{}'
-    scale: 41
-    fitToScreenEnabled: 1
-    rotationDegree: 90
-    highlightSafeAreaEnabled: 0
-    friendlyName: Samsung Galaxy Note10
-    screenIndex: 0
-    networkReachability: 1
-    systemLanguage: 10
---- !u!114 &17
-MonoBehaviour:
-  m_ObjectHideFlags: 52
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
   m_Script: {fileID: 12071, guid: 0000000000000000e000000000000000, type: 0}
   m_Name: 
   m_EditorClassIdentifier: 
@@ -1155,10 +1087,10 @@ MonoBehaviour:
     m_Tooltip: 
   m_Pos:
     serializedVersion: 2
-    x: 854
+    x: 543
     y: 73
-    width: 964
-    height: 414
+    width: 741
+    height: 631
   m_SerializedDataModeController:
     m_DataMode: 0
     m_PreferredDataMode: 0
@@ -1171,8 +1103,8 @@ MonoBehaviour:
     m_OverlaysVisible: 1
   m_LockTracker:
     m_IsLocked: 0
-  m_LastSelectedObjectID: 27836
---- !u!114 &18
+  m_LastSelectedObjectID: 124724
+--- !u!114 &17
 MonoBehaviour:
   m_ObjectHideFlags: 52
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1192,9 +1124,9 @@ MonoBehaviour:
     m_Tooltip: 
   m_Pos:
     serializedVersion: 2
-    x: 1583
+    x: 1286
     y: 73
-    width: 336
+    width: 633
     height: 631
   m_SerializedDataModeController:
     m_DataMode: 0
@@ -1219,7 +1151,7 @@ MonoBehaviour:
   m_LockTracker:
     m_IsLocked: 0
   m_PreviewWindow: {fileID: 0}
---- !u!114 &19
+--- !u!114 &18
 MonoBehaviour:
   m_ObjectHideFlags: 52
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1264,7 +1196,7 @@ MonoBehaviour:
     m_SkipHidden: 0
     m_SearchArea: 1
     m_Folders:
-    - Assets/Mobile FPS Game GUI - Buttons and Icons v1.1
+    - Packages/com.google.xr.cardboard/Runtime
     m_Globs: []
     m_OriginalText: 
     m_ImportLogFlags: 0
@@ -1272,16 +1204,16 @@ MonoBehaviour:
   m_ViewMode: 1
   m_StartGridSize: 64
   m_LastFolders:
-  - Assets/Mobile FPS Game GUI - Buttons and Icons v1.1
+  - Packages/com.google.xr.cardboard/Runtime
   m_LastFoldersGridSize: -1
   m_LastProjectPath: C:\Users\chewy\Documents\GitHub\MyLazerTagGame
   m_LockTracker:
     m_IsLocked: 0
   m_FolderTreeState:
-    scrollPos: {x: 0, y: 1183}
-    m_SelectedIDs: be7d0000
-    m_LastClickedID: 32190
-    m_ExpandedIDs: 00000000087d00000a7d00000c7d00000e7d0000107d0000127d0000147d0000167d0000187d00001a7d00001c7d00001e7d0000207d0000227d0000247d0000267d0000287d00002a7d00002c7d00002e7d0000307d0000327d0000347d0000367d0000387d00003a7d00003c7d00003e7d0000407d0000427d0000787d0000c87d000000ca9a3b
+    scrollPos: {x: 0, y: 706}
+    m_SelectedIDs: 64e30000
+    m_LastClickedID: 58212
+    m_ExpandedIDs: 0000000046710000987100009a710000fccb00005ee3000098e300009ce3000000ca9a3bffffff7f
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -1309,7 +1241,7 @@ MonoBehaviour:
     scrollPos: {x: 0, y: 0}
     m_SelectedIDs: 
     m_LastClickedID: 0
-    m_ExpandedIDs: 00000000087d00000a7d00000c7d00000e7d0000107d0000127d0000147d0000167d0000187d00001a7d00001c7d00001e7d0000207d0000227d0000247d0000267d0000287d00002a7d00002c7d00002e7d0000307d0000327d0000347d0000367d0000387d00003a7d00003c7d00003e7d0000407d0000427d0000
+    m_ExpandedIDs: 000000004671000000ca9a3b
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -1361,11 +1293,11 @@ MonoBehaviour:
       m_Icon: {fileID: 0}
       m_ResourceFile: 
     m_NewAssetIndexInList: -1
-    m_ScrollPosition: {x: 0, y: 129.5}
+    m_ScrollPosition: {x: 0, y: 0}
     m_GridSize: 64
   m_SkipHiddenPackages: 0
   m_DirectoriesAreaWidth: 258
---- !u!114 &20
+--- !u!114 &19
 MonoBehaviour:
   m_ObjectHideFlags: 52
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1386,9 +1318,9 @@ MonoBehaviour:
   m_Pos:
     serializedVersion: 2
     x: 0
-    y: 878
+    y: 725
     width: 1920
-    height: 121
+    height: 274
   m_SerializedDataModeController:
     m_DataMode: 0
     m_PreferredDataMode: 0
@@ -1399,3 +1331,71 @@ MonoBehaviour:
     m_LastAppliedPresetName: Default
     m_SaveData: []
     m_OverlaysVisible: 1
+--- !u!114 &20
+MonoBehaviour:
+  m_ObjectHideFlags: 52
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 13974, guid: 0000000000000000e000000000000000, type: 0}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_MinSize: {x: 200, y: 200}
+  m_MaxSize: {x: 4000, y: 4000}
+  m_TitleContent:
+    m_Text: Simulator
+    m_Image: {fileID: 8720083202187608617, guid: 0000000000000000d000000000000000, type: 0}
+    m_Tooltip: 
+  m_Pos:
+    serializedVersion: 2
+    x: 543
+    y: 73
+    width: 741
+    height: 631
+  m_SerializedDataModeController:
+    m_DataMode: 0
+    m_PreferredDataMode: 0
+    m_SupportedDataModes: 
+    isAutomatic: 1
+  m_ViewDataDictionary: {fileID: 0}
+  m_OverlayCanvas:
+    m_LastAppliedPresetName: Default
+    m_SaveData: []
+    m_OverlaysVisible: 1
+  m_SerializedViewNames:
+  - UnityEditor.GameView
+  m_SerializedViewValues:
+  - C:\Users\chewy\Documents\GitHub\MyLazerTagGame\Library\PlayModeViewStates\05d5589e0643a2846b10f35bdc33395c
+  m_PlayModeViewName: Device Simulator
+  m_ShowGizmos: 0
+  m_TargetDisplay: 0
+  m_ClearColor: {r: 0, g: 0, b: 0, a: 1}
+  m_TargetSize: {x: 2280, y: 1080}
+  m_TextureFilterMode: 0
+  m_TextureHideFlags: 61
+  m_RenderIMGUI: 1
+  m_EnterPlayModeBehavior: 2
+  m_UseMipMap: 0
+  m_SimulatorState:
+    controlPanelVisible: 1
+    controlPanelWidth: 50
+    controlPanelFoldoutKeys:
+    - UnityEditor.DeviceSimulation.ApplicationSettingsPlugin
+    controlPanelFoldoutValues: 01
+    pluginNames:
+    - UnityEditor.DeviceSimulation.ApplicationSettingsPlugin
+    - UnityEngine.InputSystem.Editor.InputSystemPlugin
+    pluginStates:
+    - '{}'
+    - '{}'
+    scale: 28
+    fitToScreenEnabled: 1
+    rotationDegree: 90
+    highlightSafeAreaEnabled: 0
+    friendlyName: Samsung Galaxy Note10
+    screenIndex: 0
+    networkReachability: 1
+    systemLanguage: 10
